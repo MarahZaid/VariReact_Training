@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit"
 import { ref, get } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 
-// Thunk - بيجيب الكاتيجوري والمنتجات تبعتها من Firebase
+
 export const fetchCategoryProducts = createAsyncThunk(
   "categoryProducts/fetch",
   async (categoryId) => {
@@ -42,8 +42,7 @@ const categoryProductsSlice = createSlice({
     setSortValue(state, action) {
       state.sortValue = action.payload;
     },
-    // type: "finish" | "warranty" | "certifications" | "price" | "depth"
-    // value: القيمة يلي انضغطت عليها الـ checkbox
+    
     toggleFilter(state, action) {
       const { type, value } = action.payload;
       const current = state.filters[type];
@@ -85,7 +84,7 @@ const selectProducts = (state) => state.categoryProducts.products;
 const selectFilters = (state) => state.categoryProducts.filters;
 const selectSortValue = (state) => state.categoryProducts.sortValue;
 
-// نفس منطق filters.js القديم، بس بدل ما يقرا من الـ DOM بيقرا من الـ Redux state
+
 function applyFilters(products, filters) {
   const hasAnyFilter = Object.values(filters).some((arr) => arr.length > 0);
   if (!hasAnyFilter) return products;
@@ -128,7 +127,7 @@ function applyFilters(products, filters) {
   });
 }
 
-// نفس منطق sortProducts.js القديم
+
 function sortProductsList(products, sortValue) {
   const sorted = [...products];
 
@@ -152,7 +151,6 @@ function sortProductsList(products, sortValue) {
   return sorted;
 }
 
-// selector جاهز: منتجات مفلترة + مرتبة، مع memoization (createSelector)
 export const selectFilteredSortedProducts = createSelector(
   [selectProducts, selectFilters, selectSortValue],
   (products, filters, sortValue) => {

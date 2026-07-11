@@ -2,11 +2,11 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ref, get } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 
-// نفس منطق init() و getProduct/getProductReviews/getCategory القديمين، بس مجمعين بمكان واحد
+
 export const fetchProductDetails = createAsyncThunk(
   "productDetails/fetch",
   async (productId) => {
-    // المنتج والريفيوز مع بعض (متل Promise.all القديم)
+
     const [productSnapshot, reviewsSnapshot] = await Promise.all([
       get(ref(db, `products/${productId}`)),
       get(ref(db, `reviews/${productId}`)),
@@ -24,7 +24,6 @@ export const fetchProductDetails = createAsyncThunk(
           .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
       : [];
 
-    // الكاتيجوري بتحتاج categoryId يلي طالع من المنتج، فبتجي بعده
     let category = null;
     if (product.categoryId) {
       const categorySnapshot = await get(ref(db, `categories/${product.categoryId}`));
@@ -53,7 +52,6 @@ const productDetailsSlice = createSlice({
     setSelectedColorIndex(state, action) {
       state.selectedColorIndex = action.payload;
     },
-    // بتنادى لما نطلع من الصفحة، عشان ما يضل بيانات منتج قديم ظاهرة لحظة فتح منتج جديد
     resetProductDetails() {
       return initialState;
     },
