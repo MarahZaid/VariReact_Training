@@ -13,10 +13,19 @@ export default function CategoryCard({ id, name, shortDescription, mainImage }) 
             height: "100%",
         }}
         >
-            <CardMedia component="img" image={mainImage} alt={name} sx={{ width: "100%", objectFit: "contain" }}/>
+            <CardMedia
+                component="img"
+                image={mainImage}
+                alt={name}
+                sx={{
+                    width: { xs: "60%", sm: "80%", md: "100%" },
+                    objectFit: "contain",
+                    mx: "auto",
+                }}
+            />
 
             <CardContent
-                sx={{display: "flex", flexDirection: "column", alignItems: "center", gap: 2,height: "100%", width: "100%",}}>
+                sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, height: "100%", width: "100%", }}>
 
                 <Typography variant="subtitle1" sx={{ fontWeight: "bold", color: "#032f49" }}>
                     {name}
