@@ -11,7 +11,7 @@ import {
 function HeroHome() {
     return (
         <Box sx={{ display: "flex", gap: 1, alignItems: "center", flexDirection: { xs: "column-reverse", md: "row" }}}>
-            <Box sx={{ display: "flex", gap: {xs:2, sm:2 , md:4}, flexDirection: 'column', alignItems: 'start',px:{xs:1, sm:2 , md:2, lg:3},py:{xs:2, sm:1 , md:0}, width: { xs: "100%", md: "50%", lg:'45%'}}}>
+            <Box sx={{ display: "flex", gap: {xs:2, sm:2 , md:4}, flexDirection: 'column', alignItems: 'start',px:{xs:3, sm:3 , md:2, lg:3},py:{xs:4, sm:3 , md:0}, width: { xs: "100%", md: "50%", lg:'45%'}}}>
                 <Typography variant="p" sx={{ textTransform: 'uppercase', color: '#4d4d4d' }}>WORK ELEVATED</Typography>
                 <Typography variant="h1" sx={{ fontSize: { xs: 25, sm: 30, md: 35, lg:44}, fontWeight: 700, fontFamily: '"Libre Franklin", sans-serif', }}>Summer Savings Start Here</Typography>
                 <Typography variant="p" sx={{ color: '#000', lineHeight: 1.5, width:{xs:'100%',sm:'100%',md:'100%', lg:'87%'} }}>Kick off the season with <strong>huge savings</strong> on some of our best-sellers – but only for a limited time! Shop now for a fresh new workspace that'll keep you happy and healthy all year.</Typography>
