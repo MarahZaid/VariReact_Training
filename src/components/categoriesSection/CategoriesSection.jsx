@@ -6,7 +6,7 @@ export default function CategorySection() {
   const { categories, loading, error } = useCategories();
 
   return (
-    <Box component="section" sx={{backgroundColor: "#f0f0f0", py: 8,}}>
+    <Box component="section" sx={{backgroundColor: "#f0f0f0", py: 8, px:2}}>
       <Typography variant="h3" sx={{fontWeight: "bold", textAlign: "center", color: "#032f49", fontSize: { xs: 25, sm: 30, md: 35, lg:44}, fontFamily: `"Libre Franklin", sans-serif`, mb: 6,}}>
         Height-Adjustable Standing Desks & Office Furniture
       </Typography>

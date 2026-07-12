@@ -64,7 +64,7 @@ export default function Footer() {
   return (
     <Box component="footer" sx={{ bgcolor: "#fff", pt: { xs: 4, md: 7 }, pb: 6 }}>
       <Container maxWidth="xl">
-        <Grid container spacing={{ xs: 3, sm: 4, lg: 3 }}>
+        <Grid container spacing={{ xs: 3, sm: 4, lg: 3 }} sx={{ rowGap:5}}>
           {/* Mobile Logo */}
           <Grid size={{ xs: 12 }} sx={{ display: { lg: "none" } }}>
             <RouterLink to="/">
@@ -91,7 +91,7 @@ export default function Footer() {
 
           {/* Links */}
           {Object.entries(footerLinks).map(([title, links]) => (
-            <Grid size={{ xs: 6, sm: 4, lg: 1.75 }} key={title}>
+            <Grid size={{ xs: 6, sm: 4, lg: 1.75 }}key={title}>
               <Typography
                 variant="subtitle2"
                 sx={{ fontWeight: 700, mb: 2, letterSpacing: 1, color: PRIMARY_COLOR }}
