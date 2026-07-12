@@ -259,7 +259,14 @@ function Navbar() {
       <Drawer anchor="left" open={mobileMenuOpen} onClose={closeMobileMenu}>
         <Box sx={{ width: 280, pt: 1 }} role="presentation">
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 2, py: 1 }}>
-            <Box component="img" src={variIcon} alt="Vari Logo" sx={{ width: 80 }} />
+            <RouterLink to="/">
+                <Box
+                  component="img"
+                  src={variIcon}
+                  alt="Vari Logo"
+                  sx={{ width: 80 }}
+                />
+              </RouterLink>
             <IconButton onClick={closeMobileMenu}>
               <CloseIcon />
             </IconButton>

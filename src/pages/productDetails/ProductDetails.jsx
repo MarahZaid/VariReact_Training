@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Container, Grid, CircularProgress, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography, Skeleton, Fade } from "@mui/material";
 import {
   fetchProductDetails,
   resetProductDetails,
@@ -13,6 +13,24 @@ import RatingBreakdown from "../../components/ratingBreakdown/RatingBreakdown";
 import ReviewSlider from "../../components/reviewSlider/ReviewSlider";
 import CustomerReviews from "../../components/customerReviews/CustomerReviews";
 import ContactEmail from "../../components/contactEmail/ContactEmail";
+
+function ProductDetailsSkeleton() {
+  return (
+    <Grid container spacing={5}>
+      <Grid item size={{ xs: 12, md: 6 }}>
+        <Skeleton variant="rectangular" height={480} />
+      </Grid>
+
+      <Grid item size={{ xs: 12, md: 6 }}>
+        <Skeleton variant="text" width="80%" height={45} />
+        <Skeleton variant="text" width="50%" sx={{ mb: 2 }} />
+        <Skeleton variant="text" width="30%" height={35} sx={{ mb: 3 }} />
+        <Skeleton variant="rectangular" height={48} sx={{ mb: 2 }} />
+        <Skeleton variant="rectangular" height={48} />
+      </Grid>
+    </Grid>
+  );
+}
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -30,14 +48,6 @@ export default function ProductDetails() {
     };
   }, [id, dispatch]);
 
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" py={10}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
   if (error) {
     return (
       <Typography textAlign="center" color="error" py={10}>
@@ -46,29 +56,39 @@ export default function ProductDetails() {
     );
   }
 
-  if (!product) return null;
-
   return (
+    <>
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <ProductBreadcrumb />
-      <Grid container spacing={5}>
-        <Grid item size={{ xs: 12, md: 6, }}>
-          <ProductGallery />
-        </Grid>
+      {!loading && product && <ProductBreadcrumb />}
 
-        <Grid item size={{ xs: 12, md: 6, }}>
-          <ProductInfo />
-        </Grid>
-      </Grid>
+      {loading || !product ? (
+        <ProductDetailsSkeleton />
+      ) : (
+        <Fade in timeout={300}>
+          <Box>
+            <Grid container spacing={5}>
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <ProductGallery />
+              </Grid>
 
-      <ReviewSlider />
+              <Grid item size={{ xs: 12, md: 6 }}>
+                <ProductInfo />
+              </Grid>
+            </Grid>
 
-      <Container>
-        <RatingBreakdown />
-        <CustomerReviews />
-      </Container>
+            <ReviewSlider />
 
-      <ContactEmail />
+            <Container>
+              <RatingBreakdown />
+              <CustomerReviews />
+            </Container>
+          </Box>
+        </Fade>
+      )}
+
+      
     </Container>
+    <ContactEmail />
+    </>
   );
 }
