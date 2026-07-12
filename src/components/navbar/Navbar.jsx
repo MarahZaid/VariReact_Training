@@ -49,10 +49,10 @@ function Navbar() {
     setAnchorEl(null);
   };
 
- 
+
   const { categories } = useCategories();
 
-  
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [productsExpanded, setProductsExpanded] = useState(false);
 
@@ -64,7 +64,7 @@ function Navbar() {
 
   return (
     <>
-      
+
       <AppBar position="static" elevation={0} sx={{ bgcolor: "#003349" }}>
         <Toolbar
           sx={{
@@ -125,7 +125,16 @@ function Navbar() {
               >
                 <MenuIcon sx={{ fontSize: { xs: 28, sm: 35 } }} />
               </IconButton>
-              <Box component="img" src={variIcon} alt="Vari Logo" sx={{ width: { xs: 65, sm: 100 } }} />
+
+              <RouterLink to="/">
+                <Box
+                  component="img"
+                  src={variIcon}
+                  alt="Vari Logo"
+                  sx={{ width: { xs: 65, sm: 100 } }}
+                />
+              </RouterLink>
+
             </Box>
 
             <Box
@@ -219,7 +228,7 @@ function Navbar() {
               </Box>
             </Box>
 
-            
+
             <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
               {categories.map((category) => (
                 <MenuItem
@@ -246,7 +255,7 @@ function Navbar() {
         </Container>
       </AppBar>
 
-      
+
       <Drawer anchor="left" open={mobileMenuOpen} onClose={closeMobileMenu}>
         <Box sx={{ width: 280, pt: 1 }} role="presentation">
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 2, py: 1 }}>

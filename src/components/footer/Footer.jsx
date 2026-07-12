@@ -11,6 +11,8 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import logo from "../../assets/imgs/logo.svg";
 import bbb from "../../assets/imgs/bbb.png";
 
+import { Link as RouterLink } from "react-router-dom";
+
 const footerLinks = {
   PRODUCTS: [
     "Sit-Stand Solutions",
@@ -66,13 +68,28 @@ export default function Footer() {
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 4, justifyContent: "space-between" }}>
 
           {/* Mobile Logo */}
+          {/* Mobile Logo */}
           <Box sx={{ width: "100%", display: { lg: "none" } }}>
-            <Box component="img" src={logo} alt="Vari Logo" sx={{ width: 120 }} />
+            <RouterLink to="/">
+              <Box
+                component="img"
+                src={logo}
+                alt="Vari Logo"
+                sx={{ width: 120, cursor: "pointer" }}
+              />
+            </RouterLink>
           </Box>
 
           {/* Desktop Logo */}
           <Box sx={{ display: { xs: "none", lg: "block" } }}>
-            <Box component="img" src={logo} alt="Vari Logo" sx={{ width: 90 }} />
+            <RouterLink to="/">
+              <Box
+                component="img"
+                src={logo}
+                alt="Vari Logo"
+                sx={{ width: 90, cursor: "pointer" }}
+              />
+            </RouterLink>
           </Box>
 
           {/* Links */}
