@@ -18,8 +18,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import useCategoryProducts from "../../../hooks/useCategoryProducts";
 
-// Vari brand tokens — kept in sync with AddProduct, AdminProducts,
-// AdminProductDetails & AdminCategories
+
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",

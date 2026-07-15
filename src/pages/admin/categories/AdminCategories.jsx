@@ -25,7 +25,7 @@ import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import useCategories from "../../../hooks/useAdminCategories";
 import CategoryFormDialog from "./CategoryFormDialog";
 
-// Vari brand tokens — kept in sync with AddProduct, AdminProducts & AdminProductDetails
+
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",

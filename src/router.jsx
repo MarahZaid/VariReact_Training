@@ -10,7 +10,7 @@ import AdminProducts from "./pages/admin/products/AdminProducts.jsx";
 import AdminProductDetails from "./pages/admin/products/AdminProductDetails.jsx";
 import AdminCategories from "./pages/admin/categories/AdminCategories.jsx";
 import AdminOrders from "./pages/admin/orders/AdminOrders.jsx";
-import AdminAnalytics from "./pages/admin/analytics/AdminAnalytics.jsx";
+import AdminCustomers from "./pages/admin/customers/AdminCustomers.jsx";
 import AdminCategoryProducts from "./pages/admin/categories/AdminCategoryProducts.jsx";
 import AddProduct from "./pages/admin/products/Addproduct.jsx";
 
@@ -71,8 +71,8 @@ const router = createBrowserRouter([
                 element: <AdminOrders />
             },
             {
-                path: 'analytics',
-                element: <AdminAnalytics />
+                path: 'customers',
+                element: <AdminCustomers />
             },
         ]
     },
