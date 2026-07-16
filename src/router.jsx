@@ -3,7 +3,9 @@ import MainLayout from "./Layout/MainLayout";
 import AdminLayout from "./Layout/AdminLayout";
 import Home from "./pages/home/Home.jsx";
 import Products from "./pages/products/Products.jsx"
-import ProductDetails from "./pages/productDetails/ProductDetails.jsx"
+import ProductDetails from "./pages/productDetails/ProductDetails.jsx";
+import Login from "./pages/login/Login.jsx";
+import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
 
 import AdminDashboard from "./pages/admin/dashboard/AdminDashboard.jsx";
 import AdminProducts from "./pages/admin/products/AdminProducts.jsx";
@@ -33,12 +35,21 @@ const router = createBrowserRouter([
                 path: 'product/:id',
                 element: <ProductDetails />
             },
+            {
+                path: '/login',
+                element: <Login />
+            }
         ]
     },
 
+
     {
         path: '/admin',
-        element: <AdminLayout />,
+        element: (
+            <ProtectedAdminRoute>
+                <AdminLayout />
+            </ProtectedAdminRoute>
+        ),
         children: [
             {
                 index: true,
@@ -54,7 +65,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'products/new',
-                element : <AddProduct />
+                element: <AddProduct />
 
             },
             {
