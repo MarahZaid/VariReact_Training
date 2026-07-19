@@ -28,7 +28,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import useProducts from "../../../hooks/useProducts";
+import useProducts from "../../../hooks/useproducts";
 
 
 const BRAND = {

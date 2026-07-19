@@ -29,7 +29,7 @@ import FormatQuoteRoundedIcon from "@mui/icons-material/FormatQuoteRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
-import useProductDetails from "../../../hooks/useProductDetails";
+import useProductDetails from "../../../hooks/useproductdetails";
 import useCategories from "../../../hooks/useCategories";
 
 

@@ -28,9 +28,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
-import useProducts from "../../../hooks/useProducts";
+import useProducts from "../../../hooks/useproducts";
 
-// Vari brand tokens — kept in sync with AddProduct & AdminProductDetails
+
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",
