@@ -63,7 +63,7 @@ export default function Cart() {
       setProducts({});
       setLoadingProducts(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [JSON.stringify(uniqueProductIds)]);
 
   function getColorImage(product, colorName) {
@@ -273,84 +273,119 @@ export default function Cart() {
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "center",
-                      gap: 2.5,
+                      flexDirection: { xs: "column", sm: "row" },
+                      alignItems: { xs: "stretch", sm: "center" },
+                      gap: { xs: 1.5, sm: 2.5 },
                       p: 2.5,
                       transition: "background-color 0.15s ease",
                       "&:hover": { backgroundColor: BRAND.pageBg },
                     }}
                   >
-                    <Box
-                      component="img"
-                      src={image}
-                      alt={product.name}
-                      sx={{
-                        width: 88,
-                        height: 88,
-                        objectFit: "contain",
-                        borderRadius: "12px",
-                        border: `1px solid ${BRAND.border}`,
-                        backgroundColor: "#fff",
-                        flexShrink: 0,
-                      }}
-                    />
+                    {/* Product info row: image + name/color/unit price */}
+                    <Box sx={{ display: "flex", gap: 2.5, flex: 1, minWidth: 0 }}>
+                      <Box
+                        component="img"
+                        src={image}
+                        alt={product.name}
+                        sx={{
+                          width: 88,
+                          height: 88,
+                          objectFit: "contain",
+                          borderRadius: "12px",
+                          border: `1px solid ${BRAND.border}`,
+                          backgroundColor: "#fff",
+                          flexShrink: 0,
+                        }}
+                      />
 
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Typography sx={{ fontWeight: 700, color: BRAND.navy }}>
-                        {product.name}
-                      </Typography>
-                      <Typography sx={{ color: BRAND.subtle, mt: 0.4, fontSize: "0.85rem" }}>
-                        Color: {color}
-                      </Typography>
-                      <Typography sx={{ color: BRAND.ink, mt: 0.6, fontWeight: 600 }}>
-                        ${product.price}
-                      </Typography>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography sx={{ fontWeight: 700, color: BRAND.navy }}>
+                          {product.name}
+                        </Typography>
+                        <Typography sx={{ color: BRAND.subtle, mt: 0.4, fontSize: "0.85rem" }}>
+                          Color: {color}
+                        </Typography>
+                        <Typography sx={{ color: BRAND.ink, mt: 0.6, fontWeight: 600 }}>
+                          ${product.price}
+                        </Typography>
+
+                        {/* Delete button on mobile - inline under product info */}
+                        <IconButton
+                          onClick={() => removeFromCart(user.uid, itemId)}
+                          sx={{
+                            display: { xs: "inline-flex", sm: "none" },
+                            color: "#c62828",
+                            ml: -1,
+                            mt: 0.5,
+                            "&:hover": { backgroundColor: "#fdecea" },
+                          }}
+                        >
+                          <DeleteOutlinedIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </Box>
 
+                    {/* Quantity + total price row (stacks below on mobile, inline on desktop) */}
                     <Box
                       sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: 0.5,
-                        border: `1px solid ${BRAND.border}`,
-                        borderRadius: "999px",
-                        px: 0.5,
-                        backgroundColor: BRAND.pageBg,
+                        justifyContent: { xs: "space-between", sm: "flex-end" },
+                        gap: { xs: 1.5, sm: 2.5 },
+                        flexShrink: 0,
                       }}
                     >
-                      <IconButton
-                        size="small"
-                        onClick={() =>
-                          setCartItemQuantity(user.uid, itemId, productId, color, quantity - 1)
-                        }
-                        sx={{ color: BRAND.navy }}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 0.5,
+                          border: `1px solid ${BRAND.border}`,
+                          borderRadius: "999px",
+                          px: 0.5,
+                          backgroundColor: BRAND.pageBg,
+                          flexShrink: 0,
+                        }}
                       >
-                        <RemoveIcon fontSize="small" />
-                      </IconButton>
-                      <Typography sx={{ width: 22, textAlign: "center", fontWeight: 700, color: BRAND.ink }}>
-                        {quantity}
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            setCartItemQuantity(user.uid, itemId, productId, color, quantity - 1)
+                          }
+                          sx={{ color: BRAND.navy }}
+                        >
+                          <RemoveIcon fontSize="small" />
+                        </IconButton>
+                        <Typography sx={{ width: 22, textAlign: "center", fontWeight: 700, color: BRAND.ink }}>
+                          {quantity}
+                        </Typography>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            setCartItemQuantity(user.uid, itemId, productId, color, quantity + 1)
+                          }
+                          sx={{ color: BRAND.navy }}
+                        >
+                          <AddIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+
+                      <Typography sx={{ fontWeight: 700, color: BRAND.navy, minWidth: 76, textAlign: "right" }}>
+                        ${(product.price * quantity).toFixed(2)}
                       </Typography>
+
+                      {/* Delete button on desktop - end of row */}
                       <IconButton
-                        size="small"
-                        onClick={() =>
-                          setCartItemQuantity(user.uid, itemId, productId, color, quantity + 1)
-                        }
-                        sx={{ color: BRAND.navy }}
+                        onClick={() => removeFromCart(user.uid, itemId)}
+                        sx={{
+                          display: { xs: "none", sm: "inline-flex" },
+                          color: "#c62828",
+                          "&:hover": { backgroundColor: "#fdecea" },
+                        }}
                       >
-                        <AddIcon fontSize="small" />
+                        <DeleteOutlinedIcon fontSize="small" />
                       </IconButton>
                     </Box>
-
-                    <Typography sx={{ fontWeight: 700, color: BRAND.navy, minWidth: 76, textAlign: "right" }}>
-                      ${(product.price * quantity).toFixed(2)}
-                    </Typography>
-
-                    <IconButton
-                      onClick={() => removeFromCart(user.uid, itemId)}
-                      sx={{ color: "#c62828", "&:hover": { backgroundColor: "#fdecea" } }}
-                    >
-                      <DeleteOutlinedIcon fontSize="small" />
-                    </IconButton>
                   </Box>
 
                   {index < cartEntries.length - 1 && <Divider sx={{ borderColor: BRAND.border }} />}
