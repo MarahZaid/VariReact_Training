@@ -12,7 +12,7 @@ import Cart from "./pages/cart/Cart.jsx";
 
 import AdminDashboard from "./pages/admin/dashboard/AdminDashboard.jsx";
 import AdminProducts from "./pages/admin/products/AdminProducts.jsx";
-import AdminProductDetails from "./pages/admin/products/AdminProductDetails.jsx";
+import AdminProductDetails from "./pages/admin/products/Adminproductdetails.jsx";
 import AdminCategories from "./pages/admin/categories/AdminCategories.jsx";
 import AdminOrders from "./pages/admin/orders/AdminOrders.jsx";
 import AdminCustomers from "./pages/admin/customers/AdminCustomers.jsx";
