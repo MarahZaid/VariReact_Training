@@ -69,7 +69,6 @@ const DETAILS_TEXT_FIELDS = [
   { key: "quoteSource", label: "Quote Source", icon: null },
 ];
 
-// Shared card shell so every section reads as one visual family
 function SectionCard({ children, sx, ...props }) {
   return (
     <Card
