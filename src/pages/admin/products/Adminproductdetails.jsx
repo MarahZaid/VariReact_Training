@@ -17,6 +17,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Skeleton,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
@@ -151,6 +152,74 @@ function specsRowsToObject(rows) {
     }
   });
   return obj;
+}
+
+function ProductDetailsSkeleton() {
+  return (
+    <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100%", p: { xs: 2, md: 3 } }}>
+      <Skeleton variant="text" width={100} height={20} sx={{ mb: 2 }} />
+
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Box>
+          <Skeleton variant="text" width={260} height={44} />
+          <Skeleton variant="text" width={140} height={20} sx={{ mt: 0.5 }} />
+        </Box>
+        <Skeleton variant="rounded" width={140} height={40} sx={{ borderRadius: "10px" }} />
+      </Box>
+
+      <Grid container spacing={3}>
+        <Grid item size={{ xs: 12, md: 5 }}>
+          <SectionCard>
+            <Skeleton variant="rounded" height={300} sx={{ borderRadius: "14px", mb: 2 }} />
+            <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} variant="rounded" width={56} height={56} sx={{ borderRadius: "10px" }} />
+              ))}
+            </Stack>
+            <Divider sx={{ mb: 2, borderColor: BRAND.border }} />
+            <Stack direction="row" spacing={1}>
+              {[1, 2, 3].map((i) => (
+                <Skeleton key={i} variant="rounded" width={70} height={30} sx={{ borderRadius: "16px" }} />
+              ))}
+            </Stack>
+          </SectionCard>
+        </Grid>
+
+        <Grid item size={{ xs: 12, md: 7 }}>
+          <SectionCard sx={{ mb: 3 }}>
+            <Skeleton variant="text" width={160} height={26} sx={{ mb: 2.5 }} />
+            <Grid container spacing={3}>
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <Grid item size={{ xs: 12, sm: 6 }} key={i}>
+                  <Skeleton variant="text" width={80} height={16} sx={{ mb: 0.5 }} />
+                  <Skeleton variant="text" width="70%" height={24} />
+                </Grid>
+              ))}
+            </Grid>
+          </SectionCard>
+
+          <SectionCard sx={{ mb: 3 }}>
+            <Skeleton variant="text" width={160} height={26} sx={{ mb: 2.5 }} />
+            <Skeleton variant="rounded" width={140} height={50} sx={{ borderRadius: "12px", mb: 2 }} />
+            <Stack spacing={1.5}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} variant="rounded" height={12} sx={{ borderRadius: 4 }} />
+              ))}
+            </Stack>
+          </SectionCard>
+
+          <SectionCard>
+            <Skeleton variant="text" width={160} height={26} sx={{ mb: 2.5 }} />
+            <Stack spacing={1.25}>
+              {[1, 2, 3, 4].map((i) => (
+                <Skeleton key={i} variant="text" width="90%" height={20} />
+              ))}
+            </Stack>
+          </SectionCard>
+        </Grid>
+      </Grid>
+    </Box>
+  );
 }
 
 export default function AdminProductDetails() {
@@ -302,19 +371,7 @@ export default function AdminProductDetails() {
   }
 
   if (loading) {
-    return (
-      <Box sx={{ p: 4 }}>
-        <LinearProgress
-          sx={{
-            borderRadius: 4,
-            height: 4,
-            backgroundColor: BRAND.border,
-            "& .MuiLinearProgress-bar": { backgroundColor: BRAND.teal },
-          }}
-        />
-        <Typography sx={{ mt: 2, color: BRAND.subtle }}>Loading product…</Typography>
-      </Box>
-    );
+    return <ProductDetailsSkeleton />;
   }
 
   if (!product) {

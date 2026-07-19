@@ -21,6 +21,7 @@ import {
   MenuItem,
   FormControl,
   Stack,
+  Skeleton,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,7 +30,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import useProducts from "../../../hooks/useProducts";
 
-
+// Vari brand tokens — kept in sync with AddProduct & AdminProductDetails
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",
@@ -218,13 +219,36 @@ export default function AdminProducts() {
             </TableHead>
 
             <TableBody>
-              {loading && (
-                <TableRow>
-                  <TableCell colSpan={7} align="center" sx={{ py: 5, color: BRAND.subtle, border: "none" }}>
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              )}
+              {loading &&
+                [1, 2, 3, 4].map((i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton variant="rounded" width={48} height={48} sx={{ borderRadius: "10px" }} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="60%" height={22} />
+                      <Skeleton variant="text" width="35%" height={16} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="50%" height={20} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Skeleton variant="text" width={50} height={22} sx={{ ml: "auto" }} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="rounded" width={32} height={24} sx={{ borderRadius: "8px", mx: "auto" }} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="text" width={40} height={20} sx={{ mx: "auto" }} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                        <Skeleton variant="circular" width={32} height={32} />
+                        <Skeleton variant="circular" width={32} height={32} />
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
 
               {!loading && visibleProducts.length === 0 && (
                 <TableRow>
