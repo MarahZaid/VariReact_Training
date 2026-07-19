@@ -19,8 +19,7 @@ import {
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import useOrders from "../../../hooks/useOrders";
 
-// Vari brand tokens — kept in sync with AddProduct, AdminProducts,
-// AdminProductDetails, AdminCategories & AdminCategoryProducts
+
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",

@@ -21,8 +21,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import useCustomers from "../../../hooks/useCustomers";
 
-// Vari brand tokens — kept in sync with AddProduct, AdminProducts,
-// AdminProductDetails, AdminCategories, AdminCategoryProducts & AdminOrders
+
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",

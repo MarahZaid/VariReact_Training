@@ -195,7 +195,7 @@ export default function Cart() {
         );
     }
 
-    // ---------- Single return from here on: empty vs items is a conditional INSIDE the tree ----------
+    
     return (
         <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100vh", py: { xs: 4, md: 6 }, px: { xs: 2, sm: 3 } }}>
             {cartEntries.length === 0 ? (
