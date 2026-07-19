@@ -29,7 +29,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PersonIcon from "@mui/icons-material/Person";
 
-import { ref, get } from "firebase/database";
+import { ref, get, set } from "firebase/database";
 import { auth, db } from "../../firebase/firebaseConfig";
 
 
@@ -167,6 +167,22 @@ export default function Login() {
         setConfirmPassword("");
     }
 
+    async function getNextCustomerId() {
+        const snapshot = await get(ref(db, "customers"));
+
+        if (!snapshot.exists()) {
+            return "cus1";
+        }
+
+        const customers = snapshot.val();
+        const numbers = Object.keys(customers)
+            .map((key) => parseInt(key.replace("cus", ""), 10))
+            .filter((n) => !isNaN(n));
+
+        const maxNumber = numbers.length > 0 ? Math.max(...numbers) : 0;
+        return `cus${maxNumber + 1}`;
+    }
+
     function friendlyError(err) {
         switch (err.code) {
             case "auth/invalid-email":
@@ -228,6 +244,18 @@ export default function Login() {
             if (name.trim()) {
                 await updateProfile(credential.user, { displayName: name.trim() });
             }
+
+            // إضافة الحساب الجديد لـ customers
+            const newCustomerId = await getNextCustomerId();
+            await set(ref(db, `customers/${newCustomerId}`), {
+                name: name.trim(),
+                email: email.trim(),
+                phone: "",
+                address: "",
+                createdAt: Date.now(),
+                uid: credential.user.uid, // مهم! يربط الكستمر بحساب الـ Auth
+            });
+
             navigate("/");
         } catch (err) {
             setError(friendlyError(err));

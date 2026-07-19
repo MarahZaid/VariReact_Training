@@ -10,6 +10,9 @@ import PublicIcon from "@mui/icons-material/Public";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Badge } from "@mui/material";
 
 import variIcon from "../../assets/imgs/logo.svg"
 
@@ -50,6 +53,11 @@ function Navbar() {
   };
 
 
+  const navigate = useNavigate();
+  const cartCount = useSelector((state) =>
+  Object.values(state.cart.items).reduce((sum, item) => sum + item.quantity, 0)
+);
+
   const { categories } = useCategories();
 
 
@@ -61,6 +69,19 @@ function Navbar() {
     setMobileMenuOpen(false);
     setProductsExpanded(false);
   };
+
+
+  const { status, isAdmin } = useSelector((state) => state.auth);
+
+  function handleAccountClick() {
+    if (status === "unauthenticated") {
+      navigate("/login");
+    } else if (isAdmin) {
+      navigate("/admin");
+    } else {
+      navigate("/account"); // بروفايل المستخدم، لسا ما عملتها
+    }
+  }
 
   return (
     <>
@@ -154,7 +175,7 @@ function Navbar() {
                   <Button
                     color="inherit"
                     startIcon={<AccountCircleOutlinedIcon sx={{ color: "#007fad" }} />}
-                    endIcon={<KeyboardArrowDownIcon />}
+                    onClick={handleAccountClick}
                     sx={{ textTransform: "none", color: "black" }}
                   >
                     My Account
@@ -246,9 +267,13 @@ function Navbar() {
               <IconButton sx={{ display: { xs: "flex", lg: "none" } }}>
                 <SearchIcon sx={{ color: "#007fad", fontSize: { xs: 26, sm: 35 } }} />
               </IconButton>
-
-              <IconButton sx={{ pl: { xs: 1.5, sm: 4 }, display: "flex", alignItems: "center" }}>
-                <ShoppingCartOutlinedIcon sx={{ color: "#007fad", fontSize: { xs: 26, sm: 35 } }} />
+              <IconButton
+                onClick={() => navigate("/cart")}
+                sx={{ pl: { xs: 1.5, sm: 4 }, display: "flex", alignItems: "center" }}
+              >
+                <Badge badgeContent={cartCount} color="error">
+                  <ShoppingCartOutlinedIcon sx={{ color: "#007fad", fontSize: { xs: 26, sm: 35 } }} />
+                </Badge>
               </IconButton>
             </Box>
           </Toolbar>
@@ -260,13 +285,13 @@ function Navbar() {
         <Box sx={{ width: 280, pt: 1 }} role="presentation">
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", px: 2, py: 1 }}>
             <RouterLink to="/">
-                <Box
-                  component="img"
-                  src={variIcon}
-                  alt="Vari Logo"
-                  sx={{ width: 80 }}
-                />
-              </RouterLink>
+              <Box
+                component="img"
+                src={variIcon}
+                alt="Vari Logo"
+                sx={{ width: 80 }}
+              />
+            </RouterLink>
             <IconButton onClick={closeMobileMenu}>
               <CloseIcon />
             </IconButton>
@@ -339,7 +364,7 @@ function Navbar() {
           <Divider />
 
           <List>
-            <ListItemButton>
+            <ListItemButton onClick={() => { handleAccountClick(); closeMobileMenu(); }}>
               <AccountCircleOutlinedIcon sx={{ color: "#007fad", mr: 1.5 }} />
               <ListItemText primary="My Account" />
             </ListItemButton>

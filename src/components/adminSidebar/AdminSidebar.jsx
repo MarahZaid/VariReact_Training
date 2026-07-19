@@ -6,6 +6,9 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import LogoutIcon from "@mui/icons-material/Logout";
 import variIcon from "../../assets/imgs/logo.svg";
 import adminNavItems from "./adminNavItems";
+import { useNavigate } from "react-router-dom";
+import { signOut } from "firebase/auth";
+import { auth } from "../../firebase/firebaseConfig";
 
 
 const OPEN_WIDTH = 260;
@@ -19,6 +22,16 @@ export default function AdminSidebar() {
 
     function toggleSidebar() {
         setOpen((prevOpen) => !prevOpen);
+    }
+
+    const navigate = useNavigate();
+    async function handleLogout() {
+        try {
+            await signOut(auth);
+            navigate("/login");
+        } catch (err) {
+            console.error("Logout error:", err);
+        }
     }
 
     return (
@@ -123,7 +136,7 @@ export default function AdminSidebar() {
                 })}
             </Box>
 
-          
+
 
             {/* Admin + Logout*/}
             <Box
@@ -153,7 +166,7 @@ export default function AdminSidebar() {
 
                 {open && (
                     <IconButton
-                        onClick={() => console.log("Logout")}
+                        onClick={handleLogout}
                         sx={{
                             color: "rgba(255,255,255,0.8)", width: 36, height: 36,
                             "&:hover": {
