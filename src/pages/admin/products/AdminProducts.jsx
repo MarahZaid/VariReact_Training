@@ -28,7 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
-import useProducts from "../../../hooks/useproducts";
+import useProducts from "../../../hooks/UseProducts";
 
 
 const BRAND = {
