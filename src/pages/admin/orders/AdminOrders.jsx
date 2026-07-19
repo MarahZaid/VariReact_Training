@@ -1,5 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -15,11 +14,13 @@ import {
   Grid,
   Stack,
   Button,
+  Skeleton,
 } from "@mui/material";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import useOrders from "../../../hooks/useOrders";
 
-
+// Vari brand tokens — kept in sync with AddProduct, AdminProducts,
+// AdminProductDetails, AdminCategories & AdminCategoryProducts
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",
@@ -90,23 +91,12 @@ function formatDate(timestamp) {
 
 export default function AdminOrders() {
   const { orders, customers, loading, updateOrderStatus } = useOrders();
-  const [searchParams] = useSearchParams();
 
   const [statusFilter, setStatusFilter] = useState("all");
-  const [customerFilter, setCustomerFilter] = useState(
-    searchParams.get("customer") || "all"
-  );
+  const [customerFilter, setCustomerFilter] = useState("all");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
-
-  // Picks up ?customer=<email> when navigating in from the Customers page
-  useEffect(() => {
-    const customerFromUrl = searchParams.get("customer");
-    if (customerFromUrl) {
-      setCustomerFilter(customerFromUrl);
-    }
-  }, [searchParams]);
 
   async function handleStatusChange(orderId, newStatus) {
     setUpdatingOrderId(orderId);
@@ -315,13 +305,31 @@ export default function AdminOrders() {
             </TableHead>
 
             <TableBody>
-              {loading && (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 5, color: BRAND.subtle, border: "none" }}>
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              )}
+              {loading &&
+                [1, 2, 3, 4].map((i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton variant="text" width={70} height={22} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="60%" height={22} />
+                      <Skeleton variant="text" width="80%" height={16} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="70%" height={18} />
+                      <Skeleton variant="text" width="50%" height={18} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Skeleton variant="text" width={50} height={22} sx={{ ml: "auto" }} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="rounded" width={110} height={30} sx={{ borderRadius: "20px", mx: "auto" }} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="70%" height={18} />
+                    </TableCell>
+                  </TableRow>
+                ))}
 
               {!loading && filteredOrders.length === 0 && (
                 <TableRow>
