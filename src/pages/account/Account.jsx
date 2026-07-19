@@ -18,6 +18,7 @@ import {
     Avatar,
     Stack,
     Paper,
+    Skeleton,
 } from "@mui/material";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
@@ -257,8 +258,27 @@ function OrdersTab({ email }) {
 
     if (loading) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-                <CircularProgress sx={{ color: BRAND.teal }} />
+            <Box>
+                <Skeleton variant="text" width={140} height={32} sx={{ mb: 3 }} />
+                {[1, 2, 3].map((i) => (
+                    <Box
+                        key={i}
+                        sx={{ border: `1px solid ${BRAND.border}`, borderRadius: "14px", p: 2.5, mb: 2 }}
+                    >
+                        <Stack direction="row" justifyContent="space-between" sx={{ mb: 1.5 }}>
+                            <Skeleton variant="text" width={110} height={26} />
+                            <Skeleton variant="rounded" width={80} height={24} sx={{ borderRadius: "8px" }} />
+                        </Stack>
+                        <Skeleton variant="text" width={90} height={18} sx={{ mb: 1.5 }} />
+                        <Skeleton variant="text" width="100%" height={20} />
+                        <Skeleton variant="text" width="80%" height={20} sx={{ mb: 1.5 }} />
+                        <Divider sx={{ my: 1.5, borderColor: BRAND.border }} />
+                        <Stack direction="row" justifyContent="space-between">
+                            <Skeleton variant="text" width={60} height={22} />
+                            <Skeleton variant="text" width={70} height={22} />
+                        </Stack>
+                    </Box>
+                ))}
             </Box>
         );
     }
@@ -374,8 +394,62 @@ export default function Account() {
 
     if (loading) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", py: 12, backgroundColor: BRAND.pageBg, minHeight: "60vh" }}>
-                <CircularProgress sx={{ color: BRAND.teal }} />
+            <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100vh", py: { xs: 4, md: 6 }, px: { xs: 2, sm: 3 } }}>
+                <Box sx={{ maxWidth: 960, mx: "auto" }}>
+                    <Skeleton variant="text" width={220} height={48} sx={{ mb: 4 }} />
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: { xs: "column", md: "row" },
+                            gap: 3,
+                            alignItems: "flex-start",
+                        }}
+                    >
+                        <Paper
+                            elevation={0}
+                            sx={{
+                                width: { xs: "100%", md: 260 },
+                                flexShrink: 0,
+                                borderRadius: "18px",
+                                border: `1px solid ${BRAND.border}`,
+                                boxShadow: BRAND.shadow,
+                                p: 2.5,
+                            }}
+                        >
+                            <Stack direction="row" alignItems="center" spacing={1.5} sx={{ mb: 3 }}>
+                                <Skeleton variant="circular" width={48} height={48} />
+                                <Box sx={{ flex: 1 }}>
+                                    <Skeleton variant="text" width="70%" height={22} />
+                                    <Skeleton variant="text" width="90%" height={18} />
+                                </Box>
+                            </Stack>
+                            <Skeleton variant="rounded" height={40} sx={{ borderRadius: "10px", mb: 1 }} />
+                            <Skeleton variant="rounded" height={40} sx={{ borderRadius: "10px" }} />
+                        </Paper>
+
+                        <Paper
+                            elevation={0}
+                            sx={{
+                                flex: 1,
+                                width: "100%",
+                                borderRadius: "18px",
+                                border: `1px solid ${BRAND.border}`,
+                                boxShadow: BRAND.shadow,
+                                p: { xs: 2.5, sm: 3.5 },
+                            }}
+                        >
+                            <Skeleton variant="text" width={180} height={28} sx={{ mb: 3 }} />
+                            {[1, 2, 3, 4].map((i) => (
+                                <Box key={i} sx={{ mb: 2.5 }}>
+                                    <Skeleton variant="text" width={90} height={16} sx={{ mb: 0.5 }} />
+                                    <Skeleton variant="rounded" height={44} sx={{ borderRadius: "10px" }} />
+                                </Box>
+                            ))}
+                            <Skeleton variant="rounded" width={140} height={44} sx={{ borderRadius: "10px" }} />
+                        </Paper>
+                    </Box>
+                </Box>
             </Box>
         );
     }
