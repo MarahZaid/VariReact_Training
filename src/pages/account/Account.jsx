@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { sendPasswordResetEmail, signOut } from "firebase/auth";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { ref, get, query, orderByChild, equalTo } from "firebase/database";
-import { getCustomerByUid, updateCustomerProfile } from "../../customerActions";
+import { getCustomerByUid, updateCustomerProfile } from "../../utils/customerActions";
 import { useNavigate } from "react-router-dom";
 
 import {

@@ -18,7 +18,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import RatingStars from "../../ui/RatingStars";
 import { setSelectedColorIndex } from "../../store/productDetailsSlice";
-import { addToCart } from "../../cartActions";
+import { addToCart } from "../../utils/cartActions";
 
 export default function ProductInfo() {
   const dispatch = useDispatch();

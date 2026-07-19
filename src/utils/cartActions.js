@@ -1,7 +1,6 @@
 import { ref, set, remove } from "firebase/database";
-import { db } from "./firebase/firebaseConfig";
+import { db } from "../firebase/firebaseConfig";
 
-// ينظف اسم اللون عشان يصير صالح كجزء من Firebase key
 function sanitizeForKey(str) {
   return str.replace(/[.#$/[\]]/g, "-");
 }
