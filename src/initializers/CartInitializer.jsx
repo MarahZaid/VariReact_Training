@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ref, onValue } from "firebase/database";
-import { db } from "./firebase/firebaseConfig";
-import { setCart, resetCart } from "./store/cartSlice";
+import { db } from "../firebase/firebaseConfig";
+import { setCart, resetCart } from "../store/cartSlice";
 
 export default function CartInitializer({ children }) {
   const dispatch = useDispatch();

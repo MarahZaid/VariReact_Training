@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { ref, get } from "firebase/database";
-import { auth, db } from "./firebase/firebaseConfig";
-import { setUser, setIsAdmin, setUnauthenticated } from "./store/authSlice";
+import { auth, db } from "../firebase/firebaseConfig";
+import { setUser, setIsAdmin, setUnauthenticated } from "../store/authSlice";
 
 export default function AuthInitializer({ children }) {
   const dispatch = useDispatch();
