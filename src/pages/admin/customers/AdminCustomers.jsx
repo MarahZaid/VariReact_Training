@@ -14,13 +14,15 @@ import {
   Chip,
   Tooltip,
   Stack,
+  Skeleton,
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import EmailIcon from "@mui/icons-material/Email";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import useCustomers from "../../../hooks/useCustomers";
 
-
+// Vari brand tokens — kept in sync with AddProduct, AdminProducts,
+// AdminProductDetails, AdminCategories, AdminCategoryProducts & AdminOrders
 const BRAND = {
   navy: "#003349",
   teal: "#007fad",
@@ -112,13 +114,38 @@ export default function AdminCustomers() {
             </TableHead>
 
             <TableBody>
-              {loading && (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 5, color: BRAND.subtle, border: "none" }}>
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              )}
+              {loading &&
+                [1, 2, 3, 4].map((i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <Skeleton variant="circular" width={40} height={40} />
+                        <Box sx={{ flex: 1 }}>
+                          <Skeleton variant="text" width="70%" height={22} />
+                          <Skeleton variant="text" width="90%" height={16} />
+                        </Box>
+                      </Box>
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="60%" height={20} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="rounded" width={32} height={24} sx={{ borderRadius: "8px", mx: "auto" }} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Skeleton variant="text" width={60} height={22} sx={{ ml: "auto" }} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="70%" height={20} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                        <Skeleton variant="circular" width={32} height={32} />
+                        <Skeleton variant="circular" width={32} height={32} />
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
 
               {!loading && customers.length === 0 && (
                 <TableRow>
