@@ -16,6 +16,7 @@ import {
   Chip,
   Tooltip,
   Stack,
+  Skeleton,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -151,13 +152,28 @@ export default function AdminCategories() {
             </TableHead>
 
             <TableBody>
-              {loading && (
-                <TableRow>
-                  <TableCell colSpan={4} align="center" sx={{ py: 5, color: BRAND.subtle, border: "none" }}>
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              )}
+              {loading &&
+                [1, 2, 3, 4].map((i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton variant="rounded" width={60} height={60} sx={{ borderRadius: "10px" }} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="60%" height={24} />
+                      <Skeleton variant="text" width="40%" height={18} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="rounded" width={32} height={24} sx={{ borderRadius: "8px", mx: "auto" }} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                        <Skeleton variant="circular" width={32} height={32} />
+                        <Skeleton variant="circular" width={32} height={32} />
+                        <Skeleton variant="circular" width={32} height={32} />
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))}
 
               {!loading && categories.length === 0 && (
                 <TableRow>

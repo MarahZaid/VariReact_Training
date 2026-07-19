@@ -13,6 +13,7 @@ import {
   Avatar,
   Chip,
   Stack,
+  Skeleton,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
@@ -69,17 +70,26 @@ export default function AdminCategoryProducts() {
         }}
       >
         <Box>
-          <Typography variant="h4" sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em" }}>
-            {loading ? "..." : category?.name || "Category not found"}
-          </Typography>
-          {category?.shortDescription ? (
-            <Typography variant="body2" sx={{ color: BRAND.subtle, mt: 0.5 }}>
-              {category.shortDescription}
-            </Typography>
+          {loading ? (
+            <>
+              <Skeleton variant="text" width={220} height={44} />
+              <Skeleton variant="text" width={160} height={20} sx={{ mt: 0.5 }} />
+            </>
           ) : (
-            <Typography variant="body2" sx={{ color: BRAND.subtle, mt: 0.5 }}>
-              {products?.length || 0} products in this category
-            </Typography>
+            <>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em" }}>
+                {category?.name || "Category not found"}
+              </Typography>
+              {category?.shortDescription ? (
+                <Typography variant="body2" sx={{ color: BRAND.subtle, mt: 0.5 }}>
+                  {category.shortDescription}
+                </Typography>
+              ) : (
+                <Typography variant="body2" sx={{ color: BRAND.subtle, mt: 0.5 }}>
+                  {products?.length || 0} products in this category
+                </Typography>
+              )}
+            </>
           )}
         </Box>
 
@@ -135,13 +145,27 @@ export default function AdminCategoryProducts() {
             </TableHead>
 
             <TableBody>
-              {loading && (
-                <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 5, color: BRAND.subtle, border: "none" }}>
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              )}
+              {loading &&
+                [1, 2, 3, 4].map((i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton variant="rounded" width={48} height={48} sx={{ borderRadius: "10px" }} />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton variant="text" width="60%" height={24} />
+                      <Skeleton variant="text" width="35%" height={18} />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Skeleton variant="text" width={50} height={24} sx={{ ml: "auto" }} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="rounded" width={32} height={24} sx={{ borderRadius: "8px", mx: "auto" }} />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="text" width={40} height={20} sx={{ mx: "auto" }} />
+                    </TableCell>
+                  </TableRow>
+                ))}
 
               {!loading && products.length === 0 && (
                 <TableRow>
