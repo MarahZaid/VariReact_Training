@@ -5,7 +5,7 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import BarChartIcon from "@mui/icons-material/BarChart";
 
 const adminNavItems = [
-  { label: "Dashboard", icon: DashboardIcon, path: "/admin" },
+  { label: "Analytics", icon: DashboardIcon, path: "/admin" },
   { label: "Products", icon: Inventory2Icon, path: "/admin/products" },
   { label: "Categories", icon: CategoryIcon, path: "/admin/categories" },
   { label: "Orders", icon: ListAltIcon, path: "/admin/orders" },
