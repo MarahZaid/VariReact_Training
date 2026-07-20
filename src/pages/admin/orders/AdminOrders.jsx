@@ -39,11 +39,11 @@ const STATUS_STYLES = {
   pending: { color: "#b26a00", bg: "#fff4e5" },
   processing: { color: "#0057a3", bg: "#e6f0fa" },
   shipped: { color: "#5e35b1", bg: "#f0eafa" },
-  delivered: { color: "#2e7d32", bg: "#eaf6ea" },
+  completed: { color: "#2e7d32", bg: "#eaf6ea" },
   cancelled: { color: "#c62828", bg: "#fdecea" },
 };
 
-const STATUS_OPTIONS = ["pending", "processing", "shipped", "delivered", "cancelled"];
+const STATUS_OPTIONS = ["pending", "processing", "shipped", "completed", "cancelled"];
 
 
 const PAGE_SIZE = 10;
@@ -102,9 +102,17 @@ export default function AdminOrders() {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   async function handleStatusChange(orderId, newStatus) {
+    const currentOrder = orders.find((o) => o.id === orderId);
+    if (currentOrder?.status === "completed") {
+      
+      return;
+    }
+
     setUpdatingOrderId(orderId);
     try {
       await updateOrderStatus(orderId, newStatus);
+    } catch (err) {
+      console.error("Failed to update order status:", err);
     } finally {
       setUpdatingOrderId(null);
     }
@@ -194,7 +202,7 @@ export default function AdminOrders() {
               <MenuItem value="pending">Pending</MenuItem>
               <MenuItem value="processing">Processing</MenuItem>
               <MenuItem value="shipped">Shipped</MenuItem>
-              <MenuItem value="delivered">Delivered</MenuItem>
+              <MenuItem value="completed">Completed</MenuItem>
               <MenuItem value="cancelled">Cancelled</MenuItem>
             </TextField>
           </Grid>
@@ -404,7 +412,9 @@ export default function AdminOrders() {
                     <TableCell align="center">
                       <StatusSelect
                         status={order.status}
-                        disabled={updatingOrderId === order.id}
+                        disabled={
+                          updatingOrderId === order.id || order.status === "completed"
+                        }
                         onChange={(newStatus) =>
                           handleStatusChange(order.id, newStatus)
                         }

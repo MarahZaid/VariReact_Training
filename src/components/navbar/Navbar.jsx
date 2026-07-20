@@ -79,7 +79,7 @@ function Navbar() {
     } else if (isAdmin) {
       navigate("/admin");
     } else {
-      navigate("/account"); // بروفايل المستخدم، لسا ما عملتها
+      navigate("/account"); 
     }
   }
 
