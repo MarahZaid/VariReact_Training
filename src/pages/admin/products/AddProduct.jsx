@@ -416,7 +416,7 @@ export default function AddProduct() {
               onChange={(e) => {
                 const value = e.target.value;
                 updateField("name", value);
-                if (!form.slug) updateField("slug", slugify(value));
+                updateField("slug", slugify(value));
               }}
               sx={inputSx}
             />
@@ -428,8 +428,8 @@ export default function AddProduct() {
               fullWidth
               size="small"
               value={form.slug}
-              onChange={(e) => updateField("slug", e.target.value)}
-              helperText="Auto-generated from the name — you can edit it"
+              InputProps={{ readOnly: true }}
+              helperText="Auto-generated from the name"
               sx={inputSx}
             />
           </Grid>

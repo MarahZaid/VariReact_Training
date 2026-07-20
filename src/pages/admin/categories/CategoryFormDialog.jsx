@@ -52,7 +52,6 @@ function slugify(text) {
 
 export default function CategoryFormDialog({ open, onClose, onSubmit, initialData }) {
   const [form, setForm] = useState(EMPTY_FORM);
-  const [slugTouched, setSlugTouched] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const isEdit = Boolean(initialData);
@@ -60,7 +59,6 @@ export default function CategoryFormDialog({ open, onClose, onSubmit, initialDat
   useEffect(() => {
     if (open) {
       setForm(initialData ? { ...EMPTY_FORM, ...initialData } : EMPTY_FORM);
-      setSlugTouched(Boolean(initialData?.slug));
     }
   }, [open, initialData]);
 
@@ -69,12 +67,11 @@ export default function CategoryFormDialog({ open, onClose, onSubmit, initialDat
       const value = e.target.value;
       setForm((prev) => {
         const next = { ...prev, [field]: value };
-        if (field === "name" && !slugTouched) {
+        if (field === "name") {
           next.slug = slugify(value);
         }
         return next;
       });
-      if (field === "slug") setSlugTouched(true);
     };
   }
 
@@ -160,8 +157,8 @@ export default function CategoryFormDialog({ open, onClose, onSubmit, initialDat
               fullWidth
               size="small"
               value={form.slug}
-              onChange={handleChange("slug")}
-              helperText="Auto-generated from the name, but you can edit it"
+              InputProps={{ readOnly: true }}
+              helperText="Auto-generated from the name"
               sx={{ ...inputSx, backgroundColor: "#fff" }}
               FormHelperTextProps={{ sx: { color: BRAND.subtle, mx: 0 } }}
             />
