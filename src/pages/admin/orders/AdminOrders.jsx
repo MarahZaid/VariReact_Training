@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -44,6 +44,9 @@ const STATUS_STYLES = {
 };
 
 const STATUS_OPTIONS = ["pending", "processing", "shipped", "delivered", "cancelled"];
+
+
+const PAGE_SIZE = 10;
 
 function StatusSelect({ status, onChange, disabled }) {
   const style = STATUS_STYLES[status] || { color: "#555", bg: "#eee" };
@@ -96,6 +99,7 @@ export default function AdminOrders() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   async function handleStatusChange(orderId, newStatus) {
     setUpdatingOrderId(orderId);
@@ -126,6 +130,18 @@ export default function AdminOrders() {
     });
   }, [orders, statusFilter, customerFilter, dateFrom, dateTo]);
 
+  
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [statusFilter, customerFilter, dateFrom, dateTo]);
+
+  const displayedOrders = filteredOrders.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredOrders.length;
+
+  function handleLoadMore() {
+    setVisibleCount((prev) => prev + PAGE_SIZE);
+  }
+
   function clearFilters() {
     setStatusFilter("all");
     setCustomerFilter("all");
@@ -141,7 +157,8 @@ export default function AdminOrders() {
           Orders
         </Typography>
         <Typography variant="body2" sx={{ color: BRAND.subtle, mt: 0.25 }}>
-          {filteredOrders.length} of {orders?.length || 0} orders shown
+          Showing {Math.min(displayedOrders.length, filteredOrders.length)} of{" "}
+          {filteredOrders.length} orders ({orders?.length || 0} total)
         </Typography>
       </Box>
 
@@ -330,7 +347,7 @@ export default function AdminOrders() {
                   </TableRow>
                 ))}
 
-              {!loading && filteredOrders.length === 0 && (
+              {!loading && displayedOrders.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 6, border: "none" }}>
                     <Stack alignItems="center" spacing={1}>
@@ -344,7 +361,7 @@ export default function AdminOrders() {
               )}
 
               {!loading &&
-                filteredOrders.map((order) => (
+                displayedOrders.map((order) => (
                   <TableRow
                     key={order.id}
                     hover
@@ -405,6 +422,31 @@ export default function AdminOrders() {
           </Table>
         </TableContainer>
       </Card>
+
+      
+      {!loading && hasMore && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2.5 }}>
+          <Button
+            variant="outlined"
+            onClick={handleLoadMore}
+            sx={{
+              borderColor: BRAND.border,
+              color: BRAND.navy,
+              borderRadius: "10px",
+              textTransform: "none",
+              fontWeight: 600,
+              px: 3,
+              py: 1,
+              "&:hover": {
+                borderColor: BRAND.teal,
+                backgroundColor: "rgba(0,127,173,0.06)",
+              },
+            }}
+          >
+            Load More ({filteredOrders.length - visibleCount} remaining)
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

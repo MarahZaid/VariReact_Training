@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -55,6 +55,9 @@ function getStockSeverity(stock) {
   return { label: "OK", color: "#2e7d32", bg: "#eaf6ea" };
 }
 
+
+const PAGE_SIZE = 10;
+
 const SORT_OPTIONS = [
   { value: "name-asc", label: "Name (A → Z)" },
   { value: "name-desc", label: "Name (Z → A)" },
@@ -68,6 +71,7 @@ export default function AdminProducts() {
 
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("name-asc");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   function handleView(product) {
     navigate(`/admin/products/${product.id}`);
@@ -113,6 +117,18 @@ export default function AdminProducts() {
     return sorted;
   }, [products, search, sortBy]);
 
+ 
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [search, sortBy]);
+
+  const displayedProducts = visibleProducts.slice(0, visibleCount);
+  const hasMore = visibleCount < visibleProducts.length;
+
+  function handleLoadMore() {
+    setVisibleCount((prev) => prev + PAGE_SIZE);
+  }
+
   return (
     <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100%", p: { xs: 2, md: 3 } }}>
       {/* Header */}
@@ -131,7 +147,8 @@ export default function AdminProducts() {
             Products
           </Typography>
           <Typography variant="body2" sx={{ color: BRAND.subtle, mt: 0.25 }}>
-            {products?.length || 0} products in your catalog
+            Showing {Math.min(displayedProducts.length, visibleProducts.length)} of{" "}
+            {visibleProducts.length} products
           </Typography>
         </Box>
 
@@ -250,7 +267,7 @@ export default function AdminProducts() {
                   </TableRow>
                 ))}
 
-              {!loading && visibleProducts.length === 0 && (
+              {!loading && displayedProducts.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} align="center" sx={{ py: 6, border: "none" }}>
                     <Stack alignItems="center" spacing={1}>
@@ -264,7 +281,7 @@ export default function AdminProducts() {
               )}
 
               {!loading &&
-                visibleProducts.map((product) => {
+                displayedProducts.map((product) => {
                   const severity = getStockSeverity(product.stock ?? 0);
                   const image =
                     product.colors?.[0]?.images?.[0] ||
@@ -369,6 +386,31 @@ export default function AdminProducts() {
           </Table>
         </TableContainer>
       </Card>
+
+      
+      {!loading && hasMore && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2.5 }}>
+          <Button
+            variant="outlined"
+            onClick={handleLoadMore}
+            sx={{
+              borderColor: BRAND.border,
+              color: BRAND.navy,
+              borderRadius: "10px",
+              textTransform: "none",
+              fontWeight: 600,
+              px: 3,
+              py: 1,
+              "&:hover": {
+                borderColor: BRAND.teal,
+                backgroundColor: "rgba(0,127,173,0.06)",
+              },
+            }}
+          >
+            Load More ({visibleProducts.length - visibleCount} remaining)
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }

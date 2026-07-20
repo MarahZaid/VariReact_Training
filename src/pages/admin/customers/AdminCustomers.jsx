@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -14,6 +15,7 @@ import {
   Chip,
   Tooltip,
   Stack,
+  Button,
   Skeleton,
 } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
@@ -32,6 +34,9 @@ const BRAND = {
   border: "rgba(0,51,73,0.08)",
   shadow: "0 1px 2px rgba(0,51,73,0.04), 0 8px 24px rgba(0,51,73,0.06)",
 };
+
+
+const PAGE_SIZE = 10;
 
 function formatDate(timestamp) {
   if (!timestamp) return "-";
@@ -56,12 +61,22 @@ export default function AdminCustomers() {
   const { customers, loading } = useCustomers();
   const navigate = useNavigate();
 
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
   function handleViewOrders(customer) {
     navigate(`/admin/orders?customer=${encodeURIComponent(customer.email)}`);
   }
 
   function handleEmail(customer) {
     window.location.href = `mailto:${customer.email}`;
+  }
+
+
+  const displayedCustomers = customers.slice(0, visibleCount);
+  const hasMore = visibleCount < customers.length;
+
+  function handleLoadMore() {
+    setVisibleCount((prev) => prev + PAGE_SIZE);
   }
 
   return (
@@ -72,7 +87,8 @@ export default function AdminCustomers() {
           Customers
         </Typography>
         <Typography variant="body2" sx={{ color: BRAND.subtle, mt: 0.25 }}>
-          {customers?.length || 0} customers total
+          Showing {Math.min(displayedCustomers.length, customers.length)} of{" "}
+          {customers?.length || 0} customers
         </Typography>
       </Box>
 
@@ -146,7 +162,7 @@ export default function AdminCustomers() {
                   </TableRow>
                 ))}
 
-              {!loading && customers.length === 0 && (
+              {!loading && displayedCustomers.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} align="center" sx={{ py: 6, border: "none" }}>
                     <Stack alignItems="center" spacing={1}>
@@ -160,7 +176,7 @@ export default function AdminCustomers() {
               )}
 
               {!loading &&
-                customers.map((customer) => (
+                displayedCustomers.map((customer) => (
                   <TableRow
                     key={customer.email}
                     hover
@@ -247,6 +263,31 @@ export default function AdminCustomers() {
           </Table>
         </TableContainer>
       </Card>
+
+     
+      {!loading && hasMore && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2.5 }}>
+          <Button
+            variant="outlined"
+            onClick={handleLoadMore}
+            sx={{
+              borderColor: BRAND.border,
+              color: BRAND.navy,
+              borderRadius: "10px",
+              textTransform: "none",
+              fontWeight: 600,
+              px: 3,
+              py: 1,
+              "&:hover": {
+                borderColor: BRAND.teal,
+                backgroundColor: "rgba(0,127,173,0.06)",
+              },
+            }}
+          >
+            Load More ({customers.length - visibleCount} remaining)
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
