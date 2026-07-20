@@ -134,8 +134,6 @@ const emptyForm = {
   slug: "",
   categoryId: "",
   price: "",
-  oldPrice: "",
-  discountLabel: "",
   shortDescription: "",
   stock: "",
   rating: "",
@@ -324,8 +322,6 @@ export default function AddProduct() {
         slug: form.slug.trim() || slugify(form.name),
         categoryId: form.categoryId,
         price: Number(form.price) || 0,
-        oldPrice: form.oldPrice === "" ? null : Number(form.oldPrice),
-        discountLabel: form.discountLabel.trim(),
         shortDescription: form.shortDescription.trim(),
         stock: form.stock === "" ? 0 : Number(form.stock),
         rating: form.rating === "" ? 0 : Number(form.rating),
@@ -438,7 +434,7 @@ export default function AddProduct() {
             />
           </Grid>
 
-          <Grid item size={{ xs: 12, sm: 6 }}>
+          <Grid item size={{ xs: 12, sm: 4 }}>
             <FormControl fullWidth required size="small">
               <InputLabel>Category</InputLabel>
               <Select
@@ -456,7 +452,7 @@ export default function AddProduct() {
             </FormControl>
           </Grid>
 
-          <Grid item size={{ xs: 6, sm: 3 }}>
+          <Grid item size={{ xs: 12, sm: 4}}>
             <TextField
               label="Price"
               type="number"
@@ -465,35 +461,12 @@ export default function AddProduct() {
               size="small"
               value={form.price}
               onChange={(e) => updateField("price", e.target.value)}
+              helperText="Base price before discounts."
               sx={inputSx}
             />
           </Grid>
 
-          <Grid item size={{ xs: 6, sm: 3 }}>
-            <TextField
-              label="Old Price"
-              type="number"
-              fullWidth
-              size="small"
-              value={form.oldPrice}
-              onChange={(e) => updateField("oldPrice", e.target.value)}
-              sx={inputSx}
-            />
-          </Grid>
-
-          <Grid item size={{ xs: 12, sm: 6 }}>
-            <TextField
-              label="Discount Label"
-              fullWidth
-              size="small"
-              value={form.discountLabel}
-              onChange={(e) => updateField("discountLabel", e.target.value)}
-              placeholder="e.g. 30% Off - Deal Days"
-              sx={inputSx}
-            />
-          </Grid>
-
-          <Grid item size={{ xs: 6, sm: 3 }}>
+          <Grid item size={{ xs: 12, sm: 4 }}>
             <TextField
               label="Stock"
               type="number"
@@ -505,18 +478,6 @@ export default function AddProduct() {
             />
           </Grid>
 
-          <Grid item size={{ xs: 6, sm: 3 }}>
-            <TextField
-              label="Rating"
-              type="number"
-              fullWidth
-              size="small"
-              inputProps={{ step: 0.1, min: 0, max: 5 }}
-              value={form.rating}
-              onChange={(e) => updateField("rating", e.target.value)}
-              sx={inputSx}
-            />
-          </Grid>
 
           <Grid item size={{ xs: 12 }}>
             <TextField

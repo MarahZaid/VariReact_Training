@@ -10,7 +10,7 @@ export default function ProductCard({ product }) {
         name,
         price,
         oldPrice,
-        discountLabel,
+        discountPercentage,
         rating,
         reviewsCount,
         colors,
@@ -127,9 +127,9 @@ export default function ProductCard({ product }) {
                     </Typography>
                 </Box>
 
-                {discountLabel && (
+                {discountPercentage > 0 && (
                     <Typography sx={{ color: "success.main", fontWeight: 600, mb: 1 }}>
-                        {discountLabel}
+                        {discountPercentage}% OFF
                     </Typography>
                 )}
 

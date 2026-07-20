@@ -132,10 +132,10 @@ export default function AdminCategories() {
           <Table>
             <TableHead>
               <TableRow>
-                {["Image", "Name", "Products", "Actions"].map((col, i) => (
+                {["Image", "Name", "Products", "Discount", "Actions"].map((col, i) => (
                   <TableCell
                     key={col}
-                    align={i === 2 ? "center" : i === 3 ? "right" : "left"}
+                    align={i === 2 || i === 3 ? "center" : i === 4 ? "right" : "left"}
                     sx={{
                       fontWeight: 700,
                       fontSize: "0.8rem",
@@ -165,6 +165,9 @@ export default function AdminCategories() {
                     <TableCell align="center">
                       <Skeleton variant="rounded" width={32} height={24} sx={{ borderRadius: "8px", mx: "auto" }} />
                     </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="rounded" width={48} height={24} sx={{ borderRadius: "8px", mx: "auto" }} />
+                    </TableCell>
                     <TableCell align="right">
                       <Stack direction="row" justifyContent="flex-end" spacing={1}>
                         <Skeleton variant="circular" width={32} height={32} />
@@ -177,7 +180,7 @@ export default function AdminCategories() {
 
               {!loading && categories.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} align="center" sx={{ py: 6, border: "none" }}>
+                  <TableCell colSpan={5} align="center" sx={{ py: 6, border: "none" }}>
                     <Stack alignItems="center" spacing={1}>
                       <CategoryOutlinedIcon sx={{ fontSize: 32, color: BRAND.border }} />
                       <Typography variant="body2" sx={{ color: BRAND.subtle }}>
@@ -235,6 +238,25 @@ export default function AdminCategories() {
                           borderRadius: "8px",
                         }}
                       />
+                    </TableCell>
+
+                    <TableCell align="center">
+                      {category.discountPercentage > 0 ? (
+                        <Chip
+                          label={`${category.discountPercentage}% OFF`}
+                          size="small"
+                          sx={{
+                            backgroundColor: "#fdecea",
+                            color: "#c62828",
+                            fontWeight: 700,
+                            borderRadius: "8px",
+                          }}
+                        />
+                      ) : (
+                        <Typography variant="body2" sx={{ color: BRAND.subtle }}>
+                          —
+                        </Typography>
+                      )}
                     </TableCell>
 
                     <TableCell align="right">

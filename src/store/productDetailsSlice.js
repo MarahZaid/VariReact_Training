@@ -16,7 +16,7 @@ export const fetchProductDetails = createAsyncThunk(
       throw new Error(`Product "${productId}" was not found in the database.`);
     }
 
-    const product = { id: productId, ...productSnapshot.val() };
+    const rawProduct = { id: productId, ...productSnapshot.val() };
 
     const reviews = reviewsSnapshot.exists()
       ? Object.entries(reviewsSnapshot.val())
@@ -25,12 +25,26 @@ export const fetchProductDetails = createAsyncThunk(
       : [];
 
     let category = null;
-    if (product.categoryId) {
-      const categorySnapshot = await get(ref(db, `categories/${product.categoryId}`));
+    if (rawProduct.categoryId) {
+      const categorySnapshot = await get(ref(db, `categories/${rawProduct.categoryId}`));
       category = categorySnapshot.exists()
-        ? { id: product.categoryId, ...categorySnapshot.val() }
+        ? { id: rawProduct.categoryId, ...categorySnapshot.val() }
         : null;
     }
+
+    const discountPercentage = Number(category?.discountPercentage) || 0;
+    const basePrice = Number(rawProduct.price) || 0;
+
+    const product =
+      discountPercentage > 0
+        ? {
+            ...rawProduct,
+            price:
+              Math.round((basePrice - (basePrice * discountPercentage) / 100) * 100) / 100,
+            oldPrice: basePrice,
+            discountPercentage,
+          }
+        : { ...rawProduct, price: basePrice, oldPrice: null, discountPercentage: 0 };
 
     return { product, reviews, category };
   }

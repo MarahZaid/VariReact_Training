@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -101,9 +100,9 @@ export default function ProductInfo() {
         )}
       </Box>
 
-      {product.discountLabel && (
+      {product.discountPercentage > 0 && (
         <Typography sx={{ color: "success.main", fontWeight: 600, mb: 2 }}>
-          {product.discountLabel}
+          {product.discountPercentage}% OFF
         </Typography>
       )}
 

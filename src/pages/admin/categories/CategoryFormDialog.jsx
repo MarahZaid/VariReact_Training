@@ -37,6 +37,7 @@ const EMPTY_FORM = {
   description: "",
   mainImage: "",
   heroImage: "",
+  discountPercentage: 0,
 };
 
 function slugify(text) {
@@ -84,6 +85,7 @@ export default function CategoryFormDialog({ open, onClose, onSubmit, initialDat
       await onSubmit({
         ...form,
         slug: form.slug || slugify(form.name),
+        discountPercentage: Number(form.discountPercentage) || 0,
       });
       onClose();
     } finally {
@@ -173,6 +175,21 @@ export default function CategoryFormDialog({ open, onClose, onSubmit, initialDat
               value={form.shortDescription}
               onChange={handleChange("shortDescription")}
               sx={{ ...inputSx, backgroundColor: "#fff" }}
+            />
+          </Grid>
+
+          <Grid item size={{ xs: 12, sm: 12 }}>
+            <TextField
+              label="Discount %"
+              type="number"
+              fullWidth
+              size="small"
+              value={form.discountPercentage}
+              onChange={handleChange("discountPercentage")}
+              inputProps={{ min: 0, max: 100 }}
+              helperText="Automatically applies to all products in this category — set it to 0 if there's no discount."
+              sx={{ ...inputSx, backgroundColor: "#fff" }}
+              FormHelperTextProps={{ sx: { color: BRAND.subtle, mx: 0 } }}
             />
           </Grid>
 

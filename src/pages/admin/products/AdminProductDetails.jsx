@@ -54,9 +54,7 @@ const EDITABLE_FIELDS = [
   "name",
   "categoryId",
   "price",
-  "oldPrice",
   "stock",
-  "discountLabel",
   "shortDescription",
 ];
 
@@ -224,7 +222,8 @@ function ProductDetailsSkeleton() {
 export default function AdminProductDetails() {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const { product, loading, updateProduct } = useProductDetails(productId);
+  const { product, loading, updateProduct, discountPercentage, finalPrice } =
+    useProductDetails(productId);
   const { categories } = useCategories();
 
   const [editing, setEditing] = useState(false);
@@ -259,8 +258,8 @@ export default function AdminProductDetails() {
   const currentImages = currentColor?.images?.length
     ? currentColor.images
     : currentColor?.colorImg
-    ? [currentColor.colorImg]
-    : [];
+      ? [currentColor.colorImg]
+      : [];
 
   function selectColor(index) {
     setSelectedColorIndex(index);
@@ -354,7 +353,6 @@ export default function AdminProductDetails() {
       await updateProduct({
         ...form,
         price: Number(form.price) || 0,
-        oldPrice: form.oldPrice === "" ? null : Number(form.oldPrice),
         stock: Number(form.stock) || 0,
         colors: colorsForm,
         details: {
@@ -501,9 +499,9 @@ export default function AdminProductDetails() {
                   display: "block",
                 }}
               />
-              {product.discountLabel && (
+              {discountPercentage > 0 && (
                 <Chip
-                  label={product.discountLabel}
+                  label={`${discountPercentage}% OFF`}
                   size="small"
                   sx={{
                     position: "absolute",
@@ -691,7 +689,7 @@ export default function AdminProductDetails() {
               </Grid>
 
               <Grid item size={{ xs: 12, sm: 4 }}>
-                <Field label="Price">
+                <Field label="Price (before discount)">
                   {editing ? (
                     <TextField
                       type="number"
@@ -699,10 +697,17 @@ export default function AdminProductDetails() {
                       size="small"
                       value={form.price}
                       onChange={handleChange("price")}
+                      helperText="السعر الأساسي - الخصم بيتحسب تلقائيًا من الكاتيجوري"
                       sx={{ mt: 0.5, "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
                     />
                   ) : (
-                    <Typography sx={{ fontWeight: 700, color: BRAND.navy, fontSize: "1.1rem" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        color: BRAND.subtle,
+                        textDecoration: discountPercentage > 0 ? "line-through" : "none",
+                      }}
+                    >
                       ${product.price}
                     </Typography>
                   )}
@@ -710,21 +715,11 @@ export default function AdminProductDetails() {
               </Grid>
 
               <Grid item size={{ xs: 12, sm: 4 }}>
-                <Field label="Old Price">
-                  {editing ? (
-                    <TextField
-                      type="number"
-                      fullWidth
-                      size="small"
-                      value={form.oldPrice}
-                      onChange={handleChange("oldPrice")}
-                      sx={{ mt: 0.5, "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
-                    />
-                  ) : (
-                    <Typography sx={{ fontWeight: 500, color: BRAND.subtle, textDecoration: product.oldPrice ? "line-through" : "none" }}>
-                      {product.oldPrice ? `$${product.oldPrice}` : "-"}
-                    </Typography>
-                  )}
+                <Field label="Sale Price (auto)">
+                  <Typography sx={{ fontWeight: 700, color: BRAND.navy, fontSize: "1.1rem", mt: 0.5 }}>
+                    ${finalPrice}
+                  </Typography>
+                  
                 </Field>
               </Grid>
 
@@ -755,25 +750,23 @@ export default function AdminProductDetails() {
                 </Field>
               </Grid>
 
-              <Grid item size={{ xs: 12, sm: 6 }}>
-                <Field label="Discount Label">
-                  {editing ? (
-                    <TextField
-                      fullWidth
-                      size="small"
-                      value={form.discountLabel}
-                      onChange={handleChange("discountLabel")}
-                      sx={{ mt: 0.5, "& .MuiOutlinedInput-root": { borderRadius: "8px" } }}
-                    />
-                  ) : product.discountLabel ? (
+              <Grid item size={{ xs: 12, sm: 12 }}>
+                <Field label="Category Discount">
+                  {discountPercentage > 0 ? (
                     <Chip
-                      label={product.discountLabel}
+                      label={`${discountPercentage}% OFF`}
                       size="small"
                       sx={{ mt: 0.5, backgroundColor: "#fdecea", color: "#c62828", fontWeight: 700 }}
                     />
                   ) : (
-                    <Typography sx={{ color: BRAND.subtle }}>—</Typography>
+                    <Typography sx={{ color: BRAND.subtle, mt: 0.5 }}>No discount</Typography>
                   )}
+                  <Typography
+                    variant="caption"
+                    sx={{ color: BRAND.subtle, display: "block", mt: 0.5 }}
+                  >
+                    To update the discount, edit it from the category page.
+                  </Typography>
                 </Field>
               </Grid>
 

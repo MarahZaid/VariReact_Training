@@ -7,14 +7,34 @@ export const fetchCategoryProducts = createAsyncThunk(
   "categoryProducts/fetch",
   async (categoryId) => {
     const categorySnapshot = await get(ref(db, `categories/${categoryId}`));
-    const category = categorySnapshot.exists() ? categorySnapshot.val() : null;
+    const category = categorySnapshot.exists()
+      ? { id: categoryId, ...categorySnapshot.val() }
+      : null;
 
     const productsSnapshot = await get(ref(db, "products"));
     const allProducts = productsSnapshot.exists() ? productsSnapshot.val() : {};
 
+    const discountPercentage = Number(category?.discountPercentage) || 0;
+
     const products = Object.entries(allProducts)
       .filter(([, product]) => product.categoryId === categoryId)
-      .map(([id, product]) => ({ id, ...product }));
+      .map(([id, product]) => {
+        const basePrice = Number(product.price) || 0;
+
+        if (discountPercentage > 0) {
+          const finalPrice =
+            Math.round((basePrice - (basePrice * discountPercentage) / 100) * 100) / 100;
+          return {
+            id,
+            ...product,
+            price: finalPrice,
+            oldPrice: basePrice,
+            discountPercentage,
+          };
+        }
+
+        return { id, ...product, price: basePrice, oldPrice: null, discountPercentage: 0 };
+      });
 
     return { category, products };
   }

@@ -2,6 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 import { ref, get, remove, set } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 
+
+function applyCategoryDiscount(product, category) {
+  const basePrice = Number(product.price) || 0;
+  const discountPercentage = Number(category?.discountPercentage) || 0;
+
+  if (discountPercentage > 0) {
+    const finalPrice =
+      Math.round((basePrice - (basePrice * discountPercentage) / 100) * 100) / 100;
+    return { ...product, price: finalPrice, oldPrice: basePrice, discountPercentage };
+  }
+
+  return { ...product, price: basePrice, oldPrice: null, discountPercentage: 0 };
+}
+
 export default function useProducts() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -22,25 +36,22 @@ export default function useProducts() {
         ? categoriesSnapshot.val()
         : {};
 
-      const categoryNames = {};
+      const categoriesById = {};
       Object.entries(categoriesData).forEach(([id, category]) => {
-        categoryNames[id] = category.name;
+        categoriesById[id] = { id, ...category };
       });
 
-      const categoryList = Object.entries(categoriesData).map(
-        ([id, category]) => ({
-          id,
-          ...category,
-        })
-      );
+      const categoryList = Object.values(categoriesById);
       categoryList.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
-      const list = Object.entries(productsData).map(([id, product]) => ({
-        id,
-        ...product,
-        categoryName:
-          categoryNames[product.categoryId] || product.categoryId || "-",
-      }));
+      const list = Object.entries(productsData).map(([id, product]) => {
+        const category = categoriesById[product.categoryId];
+        return {
+          id,
+          ...applyCategoryDiscount(product, category),
+          categoryName: category?.name || product.categoryId || "-",
+        };
+      });
 
       list.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
