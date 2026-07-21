@@ -13,7 +13,6 @@ import {
     Stack,
     Chip,
     Skeleton,
-    Snackbar, Alert
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -22,8 +21,6 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { setCartItemQuantity, removeFromCart } from "../../utils/cartActions";
-import { getCustomerByUid } from "../../utils/customerActions";
-import { createOrderFromCart } from "../../utils/orderActions";
 
 const BRAND = {
     navy: "#003349",
@@ -47,9 +44,7 @@ export default function Cart() {
     const cartEntries = Object.entries(items); // [ [itemId, {productId, color, quantity}], ... ]
     const uniqueProductIds = [...new Set(cartEntries.map(([, item]) => item.productId))];
 
-    const [placingOrder, setPlacingOrder] = useState(false);
-    const [orderSuccess, setOrderSuccess] = useState(false);
-    const [orderError, setOrderError] = useState("");
+
 
     useEffect(() => {
         async function fetchProducts() {
@@ -89,30 +84,9 @@ export default function Cart() {
     const shipping = subtotal > 0 && subtotal < 200 ? 15 : 0;
     const total = subtotal + shipping;
 
-    async function handleCheckout() {
-        setPlacingOrder(true);
-        setOrderError("");
-        try {
-            const customer = await getCustomerByUid(user.uid);
-            if (!customer) {
-                throw new Error("Customer profile not found");
-            }
-
-            await createOrderFromCart({
-                uid: user.uid,
-                customerName: customer.name,
-                customerEmail: customer.email,
-                cartEntries,
-                products,
-            });
-
-            setOrderSuccess(true);
-        } catch (err) {
-            console.error("Checkout error:", err);
-            setOrderError("Something went wrong while placing your order. Please try again.");
-        } finally {
-            setPlacingOrder(false);
-        }
+    function handleCheckout() {
+        
+        navigate("/checkout");
     }
 
     // ---------- Loading skeleton ----------
@@ -283,7 +257,7 @@ export default function Cart() {
                             alignItems: "flex-start",
                         }}
                     >
-                        {/* Cart items */}
+                        
                         <Paper
                             elevation={0}
                             sx={{
@@ -314,7 +288,7 @@ export default function Cart() {
                                                 "&:hover": { backgroundColor: BRAND.pageBg },
                                             }}
                                         >
-                                            {/* Product info row: image + name/color/unit price */}
+                                            
                                             <Box sx={{ display: "flex", gap: 2.5, flex: 1, minWidth: 0 }}>
                                                 <Box
                                                     component="img"
@@ -342,7 +316,7 @@ export default function Cart() {
                                                         ${product.price}
                                                     </Typography>
 
-                                                    {/* Delete button on mobile - inline under product info */}
+                                                    
                                                     <IconButton
                                                         onClick={() => removeFromCart(user.uid, itemId)}
                                                         sx={{
@@ -358,7 +332,7 @@ export default function Cart() {
                                                 </Box>
                                             </Box>
 
-                                            {/* Quantity + total price row */}
+                                           
                                             <Box
                                                 sx={{
                                                     display: "flex",
@@ -407,7 +381,7 @@ export default function Cart() {
                                                     ${(product.price * quantity).toFixed(2)}
                                                 </Typography>
 
-                                                {/* Delete button on desktop - end of row */}
+                                               
                                                 <IconButton
                                                     onClick={() => removeFromCart(user.uid, itemId)}
                                                     sx={{
@@ -508,7 +482,6 @@ export default function Cart() {
                                 fullWidth
                                 variant="contained"
                                 size="large"
-                                disabled={placingOrder}
                                 onClick={handleCheckout}
                                 sx={{
                                     backgroundColor: BRAND.navy,
@@ -521,14 +494,8 @@ export default function Cart() {
                                     "&:hover": { backgroundColor: "#001f2e", boxShadow: "none" },
                                 }}
                             >
-                                {placingOrder ? "Placing order..." : "Checkout"}
+                                Checkout
                             </Button>
-
-                            {orderError && (
-                                <Typography sx={{ color: "#c62828", fontSize: "0.85rem", mt: 1.5, textAlign: "center" }}>
-                                    {orderError}
-                                </Typography>
-                            )}
 
                             <Typography
                                 variant="caption"
@@ -540,17 +507,6 @@ export default function Cart() {
                     </Box>
                 </Box>
             )}
-
-            {/* Snackbar lives outside the conditional so it survives the cart-emptying re-render */}
-            <Snackbar
-                open={orderSuccess}
-                autoHideDuration={2000}
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-                <Alert severity="success" variant="filled" sx={{ backgroundColor: "#003b57" }}>
-                    Order placed successfully!
-                </Alert>
-            </Snackbar>
         </Box>
     );
 }

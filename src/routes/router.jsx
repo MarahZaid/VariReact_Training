@@ -9,6 +9,7 @@ import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
 import Account from "../pages/account/Account.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Cart from "../pages/cart/Cart.jsx";
+import Checkout from "../pages/checkout/Checkout.jsx"
 
 import AdminDashboard from "../pages/admin/dashboard/AdminDashboard.jsx";
 import AdminProducts from "../pages/admin/products/AdminProducts.jsx";
@@ -18,6 +19,7 @@ import AdminOrders from "../pages/admin/orders/AdminOrders.jsx";
 import AdminCustomers from "../pages/admin/customers/AdminCustomers.jsx";
 import AdminCategoryProducts from "../pages/admin/categories/AdminCategoryProducts.jsx";
 import AddProduct from "../pages/admin/products/AddProduct.jsx";
+import OrderDetails from "../pages/orderDetails/OrderDetails.jsx";
 
 const router = createBrowserRouter([
     {
@@ -58,6 +60,22 @@ const router = createBrowserRouter([
                     </ProtectedRoute>
                 )
             },
+            {
+                path: 'checkout',
+                element: (
+                    <ProtectedRoute>
+                        <Checkout />
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'order-details/:orderId',
+                element: (
+                    <ProtectedRoute>
+                        <OrderDetails />
+                    </ProtectedRoute>
+                )
+            }
         ]
     },
 

@@ -17,7 +17,16 @@ async function getNextOrderId() {
   return `ord${maxNumber + 1}`;
 }
 
-export async function createOrderFromCart({ uid, customerName, customerEmail, cartEntries, products }) {
+export async function createOrderFromCart({
+  uid,
+  customerName,
+  customerEmail,
+  phone = "",
+  shippingAddress = "",
+  paymentMethod = "cash",
+  cartEntries,
+  products,
+}) {
   const items = cartEntries
     .map(([, item]) => {
       const product = products[item.productId];
@@ -32,14 +41,21 @@ export async function createOrderFromCart({ uid, customerName, customerEmail, ca
     })
     .filter(Boolean);
 
-  const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shippingFee = subtotal > 0 && subtotal < 200 ? 15 : 0;
+  const totalAmount = subtotal + shippingFee;
 
   const orderId = await getNextOrderId();
 
   await set(ref(db, `orders/${orderId}`), {
     customerName,
     customerEmail,
+    phone,
+    shippingAddress,
+    paymentMethod,
     items,
+    subtotal,
+    shippingFee,
     totalAmount,
     status: "pending",
     createdAt: Date.now(),
