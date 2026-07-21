@@ -9,7 +9,8 @@ import ProtectedAdminRoute from "./ProtectedAdminRoute.jsx";
 import Account from "../pages/account/Account.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import Cart from "../pages/cart/Cart.jsx";
-import Checkout from "../pages/checkout/Checkout.jsx"
+import Checkout from "../pages/checkout/Checkout.jsx";
+import SearchResults from "../pages/search/SearchResults.jsx";
 
 import AdminDashboard from "../pages/admin/dashboard/AdminDashboard.jsx";
 import AdminProducts from "../pages/admin/products/AdminProducts.jsx";
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
                         <OrderDetails />
                     </ProtectedRoute>
                 )
+            },
+            {
+                path: 'search',
+                element: <SearchResults />
             }
         ]
     },

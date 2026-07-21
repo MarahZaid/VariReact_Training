@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import styles from "./navbar.module.css";
 import MiniCart from "./../miniCart/MiniCart";
 
@@ -11,7 +11,9 @@ import PublicIcon from "@mui/icons-material/Public";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import { useSelector } from "react-redux";
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@mui/material";
 
@@ -19,6 +21,7 @@ import variIcon from "../../assets/imgs/logo.svg"
 
 import { Link as RouterLink } from "react-router-dom";
 import useCategories from "../../hooks/useCategories";
+import { fetchSearchIndex, filterProducts, filterCategories, filterPages } from "../../store/searchSlice";
 
 import {
   AppBar,
@@ -42,6 +45,11 @@ import {
   Divider,
   useMediaQuery,
   useTheme,
+  Popper,
+  Paper,
+  Grow,
+  ClickAwayListener,
+  CircularProgress,
 } from "@mui/material";
 
 function Navbar() {
@@ -57,22 +65,24 @@ function Navbar() {
 
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const cartCount = useSelector((state) =>
-  Object.values(state.cart.items).reduce((sum, item) => sum + item.quantity, 0)
-);
+    Object.values(state.cart.items).reduce((sum, item) => sum + item.quantity, 0)
+  );
+  const searchIndex = useSelector((state) => state.search.index);
 
   const { categories } = useCategories();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  
+
   const [miniCartAnchor, setMiniCartAnchor] = useState(null);
   const miniCartOpen = Boolean(miniCartAnchor);
   const miniCartCloseTimer = useRef(null);
 
   function handleCartMouseEnter(event) {
-    if (isMobile) return; 
+    if (isMobile) return;
     clearTimeout(miniCartCloseTimer.current);
     setMiniCartAnchor(event.currentTarget);
   }
@@ -113,8 +123,71 @@ function Navbar() {
     } else if (isAdmin) {
       navigate("/admin");
     } else {
-      navigate("/account"); 
+      navigate("/account");
     }
+  }
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const desktopSearchBoxRef = useRef(null);
+  const mobileSearchBoxRef = useRef(null);
+
+  // Debounce so we don't re-filter on every single keystroke.
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedTerm(searchTerm.trim()), 250);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Fetch (and cache) the products/categories index once, the first time
+  // someone actually starts typing. After this, filtering is instant and
+  // local — no extra Firebase reads per letter.
+  useEffect(() => {
+    if (debouncedTerm && searchIndex.status === "idle") {
+      dispatch(fetchSearchIndex());
+    }
+  }, [debouncedTerm, searchIndex.status, dispatch]);
+
+  const liveResults = useMemo(() => {
+    const term = debouncedTerm.toLowerCase();
+    if (!term) return { products: [], categories: [], pages: [] };
+    return {
+      products: filterProducts(searchIndex.products, term).slice(0, 5),
+      categories: filterCategories(searchIndex.categories, term).slice(0, 4),
+      pages: filterPages(term).slice(0, 4),
+    };
+  }, [debouncedTerm, searchIndex.products, searchIndex.categories]);
+
+  const hasLiveResults =
+    liveResults.products.length > 0 ||
+    liveResults.categories.length > 0 ||
+    liveResults.pages.length > 0;
+
+  const isIndexLoading = searchIndex.status === "loading";
+  const showDropdown = dropdownOpen && debouncedTerm.length > 0;
+
+  function resetSearchInput() {
+    setSearchTerm("");
+    setDebouncedTerm("");
+    setDropdownOpen(false);
+  }
+
+  function goToFullResults(term) {
+    const trimmed = term.trim();
+    if (!trimmed) return;
+    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+    resetSearchInput();
+    if (isMobile) closeMobileMenu();
+  }
+
+  function handleSearchSubmit(e) {
+    if (e.key && e.key !== "Enter") return;
+    goToFullResults(searchTerm);
+  }
+
+  function handleResultClick() {
+    resetSearchInput();
+    if (isMobile) closeMobileMenu();
   }
 
   return (
@@ -259,27 +332,49 @@ function Navbar() {
                   </Button>
                 </Stack>
 
-                <TextField
-                  size="small"
-                  placeholder="Search"
-                  sx={{
-                    width: 260,
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: 0,
-                      "& fieldset": { borderColor: "#007fad", borderWidth: "2px" },
-                      "&.Mui-focused fieldset": { borderColor: "#22aaff", borderWidth: "2.5px" },
-                    },
-                  }}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <SearchIcon sx={{ color: "#007fad" }} />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
+                <Box ref={desktopSearchBoxRef} sx={{ position: "relative" }}>
+                  <TextField
+                    size="small"
+                    placeholder="Search"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={handleSearchSubmit}
+                    onFocus={() => setDropdownOpen(true)}
+                    autoComplete="off"
+                    sx={{
+                      width: 260,
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 0,
+                        "& fieldset": { borderColor: "#007fad", borderWidth: "2px" },
+                        "&.Mui-focused fieldset": { borderColor: "#22aaff", borderWidth: "2.5px" },
+                      },
+                    }}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <SearchIcon
+                              sx={{ color: "#007fad", cursor: "pointer" }}
+                              onClick={() => handleSearchSubmit({})}
+                            />
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+
+                  <SearchDropdown
+                    anchorEl={desktopSearchBoxRef.current}
+                    open={showDropdown}
+                    onClose={() => setDropdownOpen(false)}
+                    term={debouncedTerm}
+                    results={liveResults}
+                    hasResults={hasLiveResults}
+                    loading={isIndexLoading}
+                    onResultClick={handleResultClick}
+                    onSeeAll={() => goToFullResults(debouncedTerm)}
+                  />
+                </Box>
               </Box>
             </Box>
 
@@ -298,9 +393,7 @@ function Navbar() {
             </Menu>
 
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <IconButton sx={{ display: { xs: "flex", lg: "none" } }}>
-                <SearchIcon sx={{ color: "#007fad", fontSize: { xs: 26, sm: 35 } }} />
-              </IconButton>
+
               <IconButton
                 onClick={handleCartClick}
                 onMouseEnter={handleCartMouseEnter}
@@ -341,11 +434,16 @@ function Navbar() {
             </IconButton>
           </Box>
 
-          <Box sx={{ px: 2, pb: 2 }}>
+          <Box sx={{ px: 2, pb: 2 }} ref={mobileSearchBoxRef}>
             <TextField
               size="small"
               fullWidth
               placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleSearchSubmit}
+              onFocus={() => setDropdownOpen(true)}
+              autoComplete="off"
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 0,
@@ -356,12 +454,29 @@ function Navbar() {
                 input: {
                   endAdornment: (
                     <InputAdornment position="end">
-                      <SearchIcon sx={{ color: "#007fad" }} />
+                      <SearchIcon
+                        sx={{ color: "#007fad", cursor: "pointer" }}
+                        onClick={() => handleSearchSubmit({})}
+                      />
                     </InputAdornment>
                   ),
                 },
               }}
             />
+
+            {isMobile && showDropdown && (
+              <Box sx={{ mt: 1 }}>
+                <SearchResultsList
+                  term={debouncedTerm}
+                  results={liveResults}
+                  hasResults={hasLiveResults}
+                  loading={isIndexLoading}
+                  onResultClick={handleResultClick}
+                  onSeeAll={() => goToFullResults(debouncedTerm)}
+                  compact
+                />
+              </Box>
+            )}
           </Box>
 
           <Divider />
@@ -425,6 +540,159 @@ function Navbar() {
         </Box>
       </Drawer>
     </>
+  );
+}
+
+// Shared content of the live-search results (used both inside the desktop
+// popper and inline inside the mobile drawer).
+function SearchResultsList({ term, results, hasResults, loading, onResultClick, onSeeAll, compact }) {
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, px: 2, py: 2 }}>
+        <CircularProgress size={18} sx={{ color: "#007fad" }} />
+        <Typography variant="body2" color="text.secondary">
+          Searching...
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (!hasResults) {
+    return (
+      <Box sx={{ px: 2, py: 2 }}>
+        <Typography variant="body2" color="text.secondary">
+          No results for "{term}"
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <>
+      {results.products.length > 0 && (
+        <List dense disablePadding subheader={<SectionLabel>Products</SectionLabel>}>
+          {results.products.map((product) => {
+            const image = product.colors?.[0]?.mainImage || product.colors?.[0]?.images?.[0];
+            return (
+              <ListItemButton
+                key={product.id}
+                component={RouterLink}
+                to={`/product/${product.id}`}
+                onClick={onResultClick}
+                sx={{ gap: 1.5 }}
+              >
+                <Box
+                  component="img"
+                  src={image}
+                  alt=""
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    objectFit: "contain",
+                    bgcolor: "#f7f7f7",
+                    border: 1,
+                    borderColor: "divider",
+                    flexShrink: 0,
+                  }}
+                />
+                <ListItemText
+                  primary={product.name}
+                  secondary={product.price != null ? `$${product.price}` : null}
+                  primaryTypographyProps={{ noWrap: true, variant: "body2" }}
+                  secondaryTypographyProps={{ sx: { color: "#007fad" } }}
+                />
+              </ListItemButton>
+            );
+          })}
+        </List>
+      )}
+
+      {results.categories.length > 0 && (
+        <List dense disablePadding subheader={<SectionLabel>Categories</SectionLabel>}>
+          {results.categories.map((category) => (
+            <ListItemButton
+              key={category.id}
+              component={RouterLink}
+              to={`/products?category=${category.id}`}
+              onClick={onResultClick}
+              sx={{ gap: 1.5 }}
+            >
+              <CategoryOutlinedIcon sx={{ color: "#007fad", fontSize: 20 }} />
+              <ListItemText primary={category.name} primaryTypographyProps={{ variant: "body2" }} />
+            </ListItemButton>
+          ))}
+        </List>
+      )}
+
+      {results.pages.length > 0 && (
+        <List dense disablePadding subheader={<SectionLabel>Pages</SectionLabel>}>
+          {results.pages.map((page) => (
+            <ListItemButton
+              key={page.path}
+              component={RouterLink}
+              to={page.path}
+              onClick={onResultClick}
+              sx={{ gap: 1.5 }}
+            >
+              <ArticleOutlinedIcon sx={{ color: "#007fad", fontSize: 20 }} />
+              <ListItemText primary={page.title} primaryTypographyProps={{ variant: "body2" }} />
+            </ListItemButton>
+          ))}
+        </List>
+      )}
+
+      <Divider />
+      <ListItemButton onClick={onSeeAll} sx={{ justifyContent: "center" }}>
+        <Typography variant="body2" fontWeight={600} sx={{ color: "#007fad" }}>
+          See all results for "{term}"
+        </Typography>
+      </ListItemButton>
+    </>
+  );
+}
+
+function SectionLabel({ children }) {
+  return (
+    <Typography
+      variant="caption"
+      sx={{ px: 2, pt: 1.5, pb: 0.5, display: "block", color: "text.secondary", fontWeight: 600 }}
+    >
+      {children}
+    </Typography>
+  );
+}
+
+// Desktop-only floating dropdown, anchored under the search field.
+function SearchDropdown({ anchorEl, open, onClose, term, results, hasResults, loading, onResultClick, onSeeAll }) {
+  if (!anchorEl) return null;
+
+  return (
+    <Popper
+      open={open}
+      anchorEl={anchorEl}
+      placement="bottom-start"
+      transition
+      style={{ width: anchorEl.clientWidth, zIndex: 1300 }}
+    >
+      {({ TransitionProps }) => (
+        <Grow {...TransitionProps} timeout={150}>
+          <Paper elevation={4} sx={{ mt: 0.5, maxHeight: 420, overflowY: "auto" }}>
+            <ClickAwayListener onClickAway={onClose}>
+              <Box>
+                <SearchResultsList
+                  term={term}
+                  results={results}
+                  hasResults={hasResults}
+                  loading={loading}
+                  onResultClick={onResultClick}
+                  onSeeAll={onSeeAll}
+                />
+              </Box>
+            </ClickAwayListener>
+          </Paper>
+        </Grow>
+      )}
+    </Popper>
   );
 }
 
