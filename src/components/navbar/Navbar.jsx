@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./navbar.module.css";
+import MiniCart from "./../miniCart/MiniCart";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
@@ -39,6 +40,8 @@ import {
   ListItemText,
   Collapse,
   Divider,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 function Navbar() {
@@ -59,6 +62,37 @@ function Navbar() {
 );
 
   const { categories } = useCategories();
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  
+  const [miniCartAnchor, setMiniCartAnchor] = useState(null);
+  const miniCartOpen = Boolean(miniCartAnchor);
+  const miniCartCloseTimer = useRef(null);
+
+  function handleCartMouseEnter(event) {
+    if (isMobile) return; 
+    clearTimeout(miniCartCloseTimer.current);
+    setMiniCartAnchor(event.currentTarget);
+  }
+
+  function handleCartMouseLeave() {
+    if (isMobile) return;
+    miniCartCloseTimer.current = setTimeout(() => setMiniCartAnchor(null), 150);
+  }
+
+  function handleCartClick(event) {
+    if (isMobile) {
+      setMiniCartAnchor((prev) => (prev ? null : event.currentTarget));
+    } else {
+      navigate("/cart");
+    }
+  }
+
+  function closeMiniCart() {
+    setMiniCartAnchor(null);
+  }
 
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -268,13 +302,23 @@ function Navbar() {
                 <SearchIcon sx={{ color: "#007fad", fontSize: { xs: 26, sm: 35 } }} />
               </IconButton>
               <IconButton
-                onClick={() => navigate("/cart")}
+                onClick={handleCartClick}
+                onMouseEnter={handleCartMouseEnter}
+                onMouseLeave={handleCartMouseLeave}
                 sx={{ pl: { xs: 1.5, sm: 4 }, display: "flex", alignItems: "center" }}
               >
                 <Badge badgeContent={cartCount} color="error">
                   <ShoppingCartOutlinedIcon sx={{ color: "#007fad", fontSize: { xs: 26, sm: 35 } }} />
                 </Badge>
               </IconButton>
+
+              <MiniCart
+                anchorEl={miniCartAnchor}
+                open={miniCartOpen}
+                onMouseEnter={handleCartMouseEnter}
+                onMouseLeave={handleCartMouseLeave}
+                onClose={closeMiniCart}
+              />
             </Box>
           </Toolbar>
         </Container>
