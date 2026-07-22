@@ -543,8 +543,7 @@ function Navbar() {
   );
 }
 
-// Shared content of the live-search results (used both inside the desktop
-// popper and inline inside the mobile drawer).
+
 function SearchResultsList({ term, results, hasResults, loading, onResultClick, onSeeAll, compact }) {
   if (loading) {
     return (
@@ -584,7 +583,7 @@ function SearchResultsList({ term, results, hasResults, loading, onResultClick, 
                 <Box
                   component="img"
                   src={image}
-                  alt=""
+                  alt={product.name}
                   sx={{
                     width: 36,
                     height: 36,

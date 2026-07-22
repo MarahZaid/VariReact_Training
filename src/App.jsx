@@ -3,18 +3,21 @@ import { Provider } from 'react-redux'
 import { store } from './store/store.js'
 import AuthInitializer from "./initializers/AuthInitializer.jsx";
 import CartInitializer from "./initializers/CartInitializer.jsx";
-import router from './routes/router.jsx'
+import router from './routes/router.jsx';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
 
   return (
-    <Provider store={store}>
-      <AuthInitializer>
-        <CartInitializer>
-          <RouterProvider router={router} />
-        </CartInitializer>
-      </AuthInitializer>
-    </Provider>
+    <HelmetProvider>
+      <Provider store={store}>
+        <AuthInitializer>
+          <CartInitializer>
+            <RouterProvider router={router} />
+          </CartInitializer>
+        </AuthInitializer>
+      </Provider>
+    </HelmetProvider>
   )
 }
 

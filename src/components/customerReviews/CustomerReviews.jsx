@@ -79,7 +79,12 @@ export default function CustomerReviews() {
             <Typography sx={{ mb: 2 }}>{review.comment}</Typography>
 
             {review.image && (
-              <Box component="img" src={review.image} sx={{ width: 130 }} />
+              <Box
+                component="img"
+                src={review.image}
+                alt={`Photo from ${review.userName}'s review`}
+                sx={{ width: 130 }}
+              />
             )}
           </Grid>
 
@@ -90,7 +95,7 @@ export default function CustomerReviews() {
       ))}
 
       {totalPages > 1 && (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mb:4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2, mb: 4 }}>
           <Pagination
             count={totalPages}
             page={page}

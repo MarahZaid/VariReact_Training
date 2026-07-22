@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, Grid, Typography, Skeleton, Fade } from "@mui/material";
 import { fetchCategoryProducts } from "../../store/categoryProductsSlice";
+import SEO from "../../ui/SEO";
 import HeroCategory from "../../components/heroCategory/HeroCategory";
 import HeaderCategory from "../../components/headerCategory/HeaderCategory";
 import FiltersSidebar from "../../components/filtersSidebar/FiltersSidebar";
@@ -47,7 +48,17 @@ export default function Products() {
 
   return (
     <Box>
-      {/* Hero/Header يضلوا موجودين حتى وقت التحميل، فقط الـ Grid هوي يلي بيتبدل */}
+      <SEO
+        title={category?.name ? `${category.name} Products` : "Products"}
+        description={
+          category?.name
+            ? `Browse our ${category.name} collection at Vari Site - quality products at great prices.`
+            : "Browse our full range of products at Vari Site."
+        }
+        url={`https://varireact-training.onrender.com/products${categoryId ? `?category=${categoryId}` : ""}`}
+      />
+
+      
       {!loading && category && (
         <>
           <HeroCategory />

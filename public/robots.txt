@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /order-details
+Disallow: /search
+
+Sitemap: https://varireact-training.onrender.com/sitemap.xml

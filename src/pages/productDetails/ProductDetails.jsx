@@ -6,6 +6,7 @@ import {
   fetchProductDetails,
   resetProductDetails,
 } from "../../store/productDetailsSlice";
+import SEO from "../../ui/SEO";
 import ProductGallery from "../../components/productGallery/ProductGallery";
 import ProductInfo from "../../components/productInfo/ProductInfo";
 import ProductBreadcrumb from "../../components/productBreadcrumb/ProductBreadcrumb";
@@ -58,37 +59,48 @@ export default function ProductDetails() {
 
   return (
     <>
-    <Container maxWidth="xl" sx={{ py: 4 }}>
-      {!loading && product && <ProductBreadcrumb />}
-
-      {loading || !product ? (
-        <ProductDetailsSkeleton />
-      ) : (
-        <Fade in timeout={300}>
-          <Box>
-            <Grid container spacing={5}>
-              <Grid item size={{ xs: 12, md: 6 }}>
-                <ProductGallery />
-              </Grid>
-
-              <Grid item size={{ xs: 12, md: 6 }}>
-                <ProductInfo />
-              </Grid>
-            </Grid>
-
-            <ReviewSlider />
-
-            <Container>
-              <RatingBreakdown />
-              <CustomerReviews />
-            </Container>
-          </Box>
-        </Fade>
+      {!loading && product && (
+        <SEO
+          title={product.name}
+          description={
+            product.description
+              ? product.description.slice(0, 150)
+              : `Check out ${product.name} at Vari Site.`
+          }
+          url={`https://varireact-training.onrender.com/product/${id}`}
+          type="product"
+        />
       )}
 
-      
-    </Container>
-    <ContactEmail />
+      <Container maxWidth="xl" sx={{ py: 4 }}>
+        {!loading && product && <ProductBreadcrumb />}
+
+        {loading || !product ? (
+          <ProductDetailsSkeleton />
+        ) : (
+          <Fade in timeout={300}>
+            <Box>
+              <Grid container spacing={5}>
+                <Grid item size={{ xs: 12, md: 6 }}>
+                  <ProductGallery />
+                </Grid>
+
+                <Grid item size={{ xs: 12, md: 6 }}>
+                  <ProductInfo />
+                </Grid>
+              </Grid>
+
+              <ReviewSlider />
+
+              <Container>
+                <RatingBreakdown />
+                <CustomerReviews />
+              </Container>
+            </Box>
+          </Fade>
+        )}
+      </Container>
+      <ContactEmail />
     </>
   );
 }

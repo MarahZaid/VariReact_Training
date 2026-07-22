@@ -31,6 +31,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 import { ref, get, set } from "firebase/database";
 import { auth, db } from "../../firebase/firebaseConfig";
+import SEO from "../../ui/SEO";
 
 
 const BRAND = {
@@ -280,6 +281,21 @@ export default function Login() {
 
     const isSignup = mode === "signup";
 
+    const seoContent = {
+        signin: {
+            title: "Sign In",
+            description: "Sign in to your Vari account to shop, track your orders, and manage your sit-stand desk purchases.",
+        },
+        signup: {
+            title: "Create Account",
+            description: "Create a free Vari account to start shopping sit-stand desks and manage your orders easily.",
+        },
+        reset: {
+            title: "Reset Password",
+            description: "Reset your Vari account password securely.",
+        },
+    };
+
     return (
         <Box
             sx={{
@@ -289,6 +305,12 @@ export default function Login() {
                 overflow: "hidden",
             }}
         >
+            <SEO
+                title={seoContent[mode].title}
+                description={seoContent[mode].description}
+                url="https://varireact-training.onrender.com/login"
+            />
+
             {/* Brand panel */}
             <Box
                 sx={{
