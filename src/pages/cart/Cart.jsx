@@ -85,7 +85,7 @@ export default function Cart() {
     const total = subtotal + shipping;
 
     function handleCheckout() {
-        
+
         navigate("/checkout");
     }
 
@@ -169,7 +169,7 @@ export default function Cart() {
         );
     }
 
-    
+
     return (
         <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100vh", py: { xs: 4, md: 6 }, px: { xs: 2, sm: 3 } }}>
             {cartEntries.length === 0 ? (
@@ -199,7 +199,7 @@ export default function Cart() {
                         >
                             <ShoppingCartOutlinedIcon sx={{ fontSize: 40, color: BRAND.teal }} />
                         </Box>
-                        <Typography variant="h5" sx={{ fontWeight: 800, color: BRAND.navy, mb: 1 }}>
+                        <Typography variant="h5" component="h1" sx={{ fontWeight: 800, color: BRAND.navy, mb: 1 }}>
                             Your cart is empty
                         </Typography>
                         <Typography sx={{ color: BRAND.subtle, mb: 3.5 }}>
@@ -241,7 +241,7 @@ export default function Cart() {
                     </Stack>
 
                     <Stack direction="row" alignItems="baseline" spacing={1.5} sx={{ mb: 4 }}>
-                        <Typography variant="h4" sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em" }}>
+                        <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em" }}>
                             Your Cart
                         </Typography>
                         <Typography sx={{ color: BRAND.subtle }}>
@@ -257,7 +257,7 @@ export default function Cart() {
                             alignItems: "flex-start",
                         }}
                     >
-                        
+
                         <Paper
                             elevation={0}
                             sx={{
@@ -288,7 +288,7 @@ export default function Cart() {
                                                 "&:hover": { backgroundColor: BRAND.pageBg },
                                             }}
                                         >
-                                            
+
                                             <Box sx={{ display: "flex", gap: 2.5, flex: 1, minWidth: 0 }}>
                                                 <Box
                                                     component="img"
@@ -316,7 +316,7 @@ export default function Cart() {
                                                         ${product.price}
                                                     </Typography>
 
-                                                    
+
                                                     <IconButton
                                                         onClick={() => removeFromCart(user.uid, itemId)}
                                                         sx={{
@@ -332,7 +332,7 @@ export default function Cart() {
                                                 </Box>
                                             </Box>
 
-                                           
+
                                             <Box
                                                 sx={{
                                                     display: "flex",
@@ -381,7 +381,7 @@ export default function Cart() {
                                                     ${(product.price * quantity).toFixed(2)}
                                                 </Typography>
 
-                                               
+
                                                 <IconButton
                                                     onClick={() => removeFromCart(user.uid, itemId)}
                                                     sx={{

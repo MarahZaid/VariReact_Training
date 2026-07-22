@@ -75,7 +75,7 @@ export default function ProductInfo() {
 
   return (
     <Box>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="h4" component="h1" sx={{ fontWeight: 700, mb: 1 }}>
         {product.name}
       </Typography>
 

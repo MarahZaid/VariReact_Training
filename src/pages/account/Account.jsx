@@ -467,7 +467,7 @@ export default function Account() {
     return (
         <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100vh", py: { xs: 4, md: 6 }, px: { xs: 2, sm: 3 } }}>
             <Box sx={{ maxWidth: 960, mx: "auto" }}>
-                <Typography variant="h4" sx={{ fontWeight: 800, color: BRAND.navy, mb: 4, letterSpacing: "-0.01em" }}>
+                <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: BRAND.navy, mb: 4, letterSpacing: "-0.01em" }}>
                     My Account
                 </Typography>
 

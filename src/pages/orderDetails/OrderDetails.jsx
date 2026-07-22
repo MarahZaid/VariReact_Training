@@ -74,12 +74,11 @@ export default function OrderDetails() {
         );
     }
 
-    // ---------- Not found ----------
     if (notFound || !order) {
         return (
             <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", px: 3 }}>
                 <Box sx={{ textAlign: "center", py: 8, maxWidth: 380 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: BRAND.navy, mb: 1 }}>
+                    <Typography variant="h5" component="h1" sx={{ fontWeight: 800, color: BRAND.navy, mb: 1 }}>
                         Order not found
                     </Typography>
                     <Typography sx={{ color: BRAND.subtle, mb: 3.5 }}>
@@ -106,7 +105,7 @@ export default function OrderDetails() {
                 {/* Success banner */}
                 <Box sx={{ textAlign: "center", mb: 4 }}>
                     <CheckCircleIcon sx={{ fontSize: 56, color: "#2e7d32", mb: 1 }} />
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: BRAND.navy, mb: 0.5 }}>
+                    <Typography variant="h5" component="h1" sx={{ fontWeight: 800, color: BRAND.navy, mb: 0.5 }}>
                         Order placed successfully!
                     </Typography>
                     <Typography sx={{ color: BRAND.subtle }}>
@@ -196,14 +195,14 @@ export default function OrderDetails() {
                     <Box sx={{ p: 3 }}>
                         <Stack spacing={1} sx={{ mb: 2 }}>
                             <Stack direction="row" justifyContent="space-between">
-                                <Typography sx={{ color: BRAND.subtle, mr:1 }}>Subtotal:</Typography>
+                                <Typography sx={{ color: BRAND.subtle, mr: 1 }}>Subtotal:</Typography>
                                 <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>
                                     ${(order.subtotal ?? order.totalAmount ?? 0).toFixed(2)}
                                 </Typography>
                             </Stack>
                             {typeof order.shippingFee === "number" && (
                                 <Stack direction="row" justifyContent="space-between">
-                                    <Typography sx={{ color: BRAND.subtle, mr:1 }}>Shipping:</Typography>
+                                    <Typography sx={{ color: BRAND.subtle, mr: 1 }}>Shipping:</Typography>
                                     <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>
                                         {order.shippingFee === 0 ? "Free" : `$${order.shippingFee.toFixed(2)}`}
                                     </Typography>
@@ -212,7 +211,7 @@ export default function OrderDetails() {
                         </Stack>
                         <Divider sx={{ mb: 2, borderColor: BRAND.border }} />
                         <Stack direction="row" justifyContent="space-between">
-                            <Typography variant="h6" sx={{ fontWeight: 700, color: BRAND.navy, mr:1 }}>Total:</Typography>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: BRAND.navy, mr: 1 }}>Total:</Typography>
                             <Typography variant="h6" sx={{ fontWeight: 800, color: BRAND.navy }}>
                                 ${(order.totalAmount ?? 0).toFixed(2)}
                             </Typography>

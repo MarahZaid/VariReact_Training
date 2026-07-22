@@ -55,7 +55,7 @@ export default function Checkout() {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
-    const [paymentMethod] = useState("cash"); 
+    const [paymentMethod] = useState("cash");
 
     const [errors, setErrors] = useState({});
     const [placingOrder, setPlacingOrder] = useState(false);
@@ -81,7 +81,7 @@ export default function Checkout() {
             setProducts({});
             setLoadingProducts(false);
         }
-        
+
     }, [JSON.stringify(uniqueProductIds)]);
 
     // ---------- Fetch customer profile & prefill billing/shipping ----------
@@ -98,7 +98,7 @@ export default function Checkout() {
                     setFullName(customerRecord.name || "");
                     setEmail(customerRecord.email || "");
                     setPhone(customerRecord.phone || "");
-                    setAddress(customerRecord.address || ""); 
+                    setAddress(customerRecord.address || "");
                 }
             } catch (err) {
                 console.error("Failed to load customer profile:", err);
@@ -152,12 +152,12 @@ export default function Checkout() {
                 customerEmail: email.trim(),
                 phone: phone.trim(),
                 shippingAddress: address.trim(),
-                paymentMethod, 
+                paymentMethod,
                 cartEntries,
                 products,
             });
 
-           
+
             dispatch(resetCart());
 
             navigate(`/order-details/${orderId}`);
@@ -176,7 +176,7 @@ export default function Checkout() {
         return (
             <Box sx={{ backgroundColor: BRAND.pageBg, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", px: 3 }}>
                 <Box sx={{ textAlign: "center", py: 8, maxWidth: 380 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 800, color: BRAND.navy, mb: 1 }}>
+                    <Typography variant="h5" component="h1" sx={{ fontWeight: 800, color: BRAND.navy, mb: 1 }}>
                         Your cart is empty
                     </Typography>
                     <Typography sx={{ color: BRAND.subtle, mb: 3.5 }}>
@@ -210,7 +210,7 @@ export default function Checkout() {
                     </Typography>
                 </Stack>
 
-                <Typography variant="h4" sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em", mb: 4 }}>
+                <Typography variant="h4" component="h1" sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em", mb: 4 }}>
                     Checkout
                 </Typography>
 
@@ -360,11 +360,11 @@ export default function Checkout() {
 
                         <Stack spacing={1.4} sx={{ mb: 2.5 }}>
                             <Stack direction="row" justifyContent="space-between">
-                                <Typography sx={{ color: BRAND.subtle, mr:1 }}>Subtotal:</Typography>
+                                <Typography sx={{ color: BRAND.subtle, mr: 1 }}>Subtotal:</Typography>
                                 <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>${subtotal.toFixed(2)}</Typography>
                             </Stack>
                             <Stack direction="row" justifyContent="space-between">
-                                <Typography sx={{ color: BRAND.subtle, mr:1 }}>Shipping:</Typography>
+                                <Typography sx={{ color: BRAND.subtle, mr: 1 }}>Shipping:</Typography>
                                 {shipping === 0 ? (
                                     <Chip label="Free" size="small" sx={{ backgroundColor: "#eaf6ea", color: "#2e7d32", fontWeight: 700, borderRadius: "6px" }} />
                                 ) : (
@@ -376,7 +376,7 @@ export default function Checkout() {
                         <Divider sx={{ mb: 2.5, borderColor: BRAND.border }} />
 
                         <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
-                            <Typography variant="h6" sx={{ fontWeight: 700, color: BRAND.navy, mr:1 }}>Total: </Typography>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: BRAND.navy, mr: 1 }}>Total: </Typography>
                             <Typography variant="h6" sx={{ fontWeight: 800, color: BRAND.navy }}>${total.toFixed(2)}</Typography>
                         </Stack>
 

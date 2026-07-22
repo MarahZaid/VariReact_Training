@@ -186,7 +186,7 @@ export default function Login() {
                 type: "website",
             })
         );
-     
+
     }, [mode, dispatch]);
 
     function switchMode(nextMode) {
@@ -275,7 +275,7 @@ export default function Login() {
                 await updateProfile(credential.user, { displayName: name.trim() });
             }
 
-           
+
             const newCustomerId = await getNextCustomerId();
             await set(ref(db, `customers/${newCustomerId}`), {
                 name: name.trim(),
@@ -283,7 +283,7 @@ export default function Login() {
                 phone: "",
                 address: "",
                 createdAt: Date.now(),
-                uid: credential.user.uid, 
+                uid: credential.user.uid,
             });
 
             navigate("/");
@@ -410,6 +410,7 @@ export default function Login() {
                         <>
                             <Typography
                                 variant="h4"
+                                component="h1"
                                 sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em" }}
                             >
                                 Sign in
@@ -560,6 +561,7 @@ export default function Login() {
                         <>
                             <Typography
                                 variant="h4"
+                                component="h1"
                                 sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em" }}
                             >
                                 Create account
@@ -744,6 +746,7 @@ export default function Login() {
 
                             <Typography
                                 variant="h4"
+                                component="h1"
                                 sx={{ fontWeight: 800, color: BRAND.navy, letterSpacing: "-0.01em" }}
                             >
                                 Reset password
