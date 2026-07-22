@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -31,7 +32,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 import { ref, get, set } from "firebase/database";
 import { auth, db } from "../../firebase/firebaseConfig";
-import SEO from "../../ui/SEO";
+import { setSEO } from "../../store/seoSlice";
 
 
 const BRAND = {
@@ -146,6 +147,7 @@ function ElevationMark() {
 
 export default function Login() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -159,6 +161,33 @@ export default function Login() {
 
     const [name, setName] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+
+    const seoContent = {
+        signin: {
+            title: "Sign In",
+            description: "Sign in to your Vari account to shop, track your orders, and manage your sit-stand desk purchases.",
+        },
+        signup: {
+            title: "Create Account",
+            description: "Create a free Vari account to start shopping sit-stand desks and manage your orders easily.",
+        },
+        reset: {
+            title: "Reset Password",
+            description: "Reset your Vari account password securely.",
+        },
+    };
+
+    useEffect(() => {
+        dispatch(
+            setSEO({
+                title: seoContent[mode].title,
+                description: seoContent[mode].description,
+                url: "https://varireact-training.onrender.com/login",
+                type: "website",
+            })
+        );
+     
+    }, [mode, dispatch]);
 
     function switchMode(nextMode) {
         setMode(nextMode);
@@ -246,7 +275,7 @@ export default function Login() {
                 await updateProfile(credential.user, { displayName: name.trim() });
             }
 
-            // إضافة الحساب الجديد لـ customers
+           
             const newCustomerId = await getNextCustomerId();
             await set(ref(db, `customers/${newCustomerId}`), {
                 name: name.trim(),
@@ -254,7 +283,7 @@ export default function Login() {
                 phone: "",
                 address: "",
                 createdAt: Date.now(),
-                uid: credential.user.uid, // مهم! يربط الكستمر بحساب الـ Auth
+                uid: credential.user.uid, 
             });
 
             navigate("/");
@@ -281,21 +310,6 @@ export default function Login() {
 
     const isSignup = mode === "signup";
 
-    const seoContent = {
-        signin: {
-            title: "Sign In",
-            description: "Sign in to your Vari account to shop, track your orders, and manage your sit-stand desk purchases.",
-        },
-        signup: {
-            title: "Create Account",
-            description: "Create a free Vari account to start shopping sit-stand desks and manage your orders easily.",
-        },
-        reset: {
-            title: "Reset Password",
-            description: "Reset your Vari account password securely.",
-        },
-    };
-
     return (
         <Box
             sx={{
@@ -305,12 +319,6 @@ export default function Login() {
                 overflow: "hidden",
             }}
         >
-            <SEO
-                title={seoContent[mode].title}
-                description={seoContent[mode].description}
-                url="https://varireact-training.onrender.com/login"
-            />
-
             {/* Brand panel */}
             <Box
                 sx={{

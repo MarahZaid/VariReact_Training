@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Container, Grid, Typography, Skeleton, Fade } from "@mui/material";
 import { fetchCategoryProducts } from "../../store/categoryProductsSlice";
-import SEO from "../../ui/SEO";
+import { setSEO } from "../../store/seoSlice";
 import HeroCategory from "../../components/heroCategory/HeroCategory";
 import HeaderCategory from "../../components/headerCategory/HeaderCategory";
 import FiltersSidebar from "../../components/filtersSidebar/FiltersSidebar";
@@ -38,6 +38,19 @@ export default function Products() {
     }
   }, [categoryId, dispatch]);
 
+  useEffect(() => {
+    dispatch(
+      setSEO({
+        title: category?.name ? `${category.name} Products` : "Products",
+        description: category?.name
+          ? `Browse our ${category.name} collection at Vari Site - quality products at great prices.`
+          : "Browse our full range of products at Vari Site.",
+        url: `https://varireact-training.onrender.com/products${categoryId ? `?category=${categoryId}` : ""}`,
+        type: "website",
+      })
+    );
+  }, [category, categoryId, dispatch]);
+
   if (error) {
     return (
       <Typography textAlign="center" color="error" py={10}>
@@ -48,17 +61,6 @@ export default function Products() {
 
   return (
     <Box>
-      <SEO
-        title={category?.name ? `${category.name} Products` : "Products"}
-        description={
-          category?.name
-            ? `Browse our ${category.name} collection at Vari Site - quality products at great prices.`
-            : "Browse our full range of products at Vari Site."
-        }
-        url={`https://varireact-training.onrender.com/products${categoryId ? `?category=${categoryId}` : ""}`}
-      />
-
-      
       {!loading && category && (
         <>
           <HeroCategory />

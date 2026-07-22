@@ -4,6 +4,7 @@ import productDetailsReducer from "./productDetailsSlice";
 import authReducer from "./authSlice";
 import cartReducer from "./cartSlice";
 import searchReducer from "./searchSlice";
+import seoReducer from "./seoSlice";
 
 
 export const store = configureStore({
@@ -13,5 +14,6 @@ export const store = configureStore({
     auth: authReducer,
     cart: cartReducer,
     search: searchReducer,
+    seo: seoReducer,
   },
 });

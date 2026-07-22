@@ -6,7 +6,7 @@ import {
   fetchProductDetails,
   resetProductDetails,
 } from "../../store/productDetailsSlice";
-import SEO from "../../ui/SEO";
+import { setSEO } from "../../store/seoSlice";
 import ProductGallery from "../../components/productGallery/ProductGallery";
 import ProductInfo from "../../components/productInfo/ProductInfo";
 import ProductBreadcrumb from "../../components/productBreadcrumb/ProductBreadcrumb";
@@ -49,6 +49,21 @@ export default function ProductDetails() {
     };
   }, [id, dispatch]);
 
+  useEffect(() => {
+    if (!loading && product) {
+      dispatch(
+        setSEO({
+          title: product.name,
+          description: product.description
+            ? product.description.slice(0, 150)
+            : `Check out ${product.name} at Vari Site.`,
+          url: `https://varireact-training.onrender.com/product/${id}`,
+          type: "product",
+        })
+      );
+    }
+  }, [loading, product, id, dispatch]);
+
   if (error) {
     return (
       <Typography textAlign="center" color="error" py={10}>
@@ -59,19 +74,6 @@ export default function ProductDetails() {
 
   return (
     <>
-      {!loading && product && (
-        <SEO
-          title={product.name}
-          description={
-            product.description
-              ? product.description.slice(0, 150)
-              : `Check out ${product.name} at Vari Site.`
-          }
-          url={`https://varireact-training.onrender.com/product/${id}`}
-          type="product"
-        />
-      )}
-
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {!loading && product && <ProductBreadcrumb />}
 

@@ -1,7 +1,10 @@
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from "react-helmet-async";
+import { useSelector } from "react-redux";
 
-function SEO({ title, description, url, type = "website" }) {
+function SEO() {
   const siteName = "Vari Site";
+  const { title, description, url, type } = useSelector((state) => state.seo);
+
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
 
   return (
