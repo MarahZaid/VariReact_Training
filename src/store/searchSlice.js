@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ref, get } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 
-// Update this list to match your site's actual pages (same paths as in router.jsx)
+
 const staticPages = [
   { title: "Home", path: "/", keywords: ["home", "homepage"] },
   { title: "All Products", path: "/products", keywords: ["products", "shop", "catalog"] },
@@ -12,8 +12,7 @@ const staticPages = [
   { title: "Login", path: "/login", keywords: ["login", "sign in"] },
 ];
 
-// Shared matching logic — used by both the live dropdown and the full
-// /search results page, so results are always consistent between the two.
+
 export function filterProducts(products, term) {
   if (!term) return [];
   return products.filter((product) => {
@@ -40,15 +39,12 @@ export function filterPages(term) {
   );
 }
 
-// Fetches the full products/categories set ONE time and caches it in the
-// store. After this resolves, every keystroke in the live search dropdown
-// filters this cached array locally — no extra Firebase reads per letter.
+
 export const fetchSearchIndex = createAsyncThunk(
   "search/fetchIndex",
   async (_, { getState }) => {
     const { status } = getState().search.index;
-    // Avoid re-fetching if already loaded/loading (e.g. dropdown focus
-    // firing while the full-page search already triggered a fetch).
+    
     if (status === "loaded") {
       const { products, categories } = getState().search.index;
       return { products, categories };
@@ -100,12 +96,11 @@ const initialState = {
   pages: [],
   loading: false,
   error: null,
-  // Cached copy of everything, used for instant client-side filtering
-  // in the live search dropdown.
+  
   index: {
     products: [],
     categories: [],
-    status: "idle", // idle | loading | loaded | failed
+    status: "idle", 
   },
 };
 
