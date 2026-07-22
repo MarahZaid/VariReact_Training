@@ -21,6 +21,7 @@ import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { setCartItemQuantity, removeFromCart } from "../../utils/cartActions";
+import { useConfirm } from "material-ui-confirm";
 
 const BRAND = {
     navy: "#003349",
@@ -35,6 +36,7 @@ const BRAND = {
 
 export default function Cart() {
     const navigate = useNavigate();
+    const confirm = useConfirm();
     const { user } = useSelector((state) => state.auth);
     const { items, status } = useSelector((state) => state.cart);
 
@@ -87,6 +89,49 @@ export default function Cart() {
     function handleCheckout() {
 
         navigate("/checkout");
+    }
+
+    async function handleRemoveItem(itemId, productName) {
+        const { confirmed } = await confirm({
+            title: "Remove item?",
+            description: `Are you sure you want to remove "${productName}" from your cart?`,
+            confirmationText: "Remove",
+            cancellationText: "Cancel",
+            dialogProps: {
+                PaperProps: {
+                    sx: { borderRadius: "16px", p: 1 },
+                },
+            },
+            titleProps: {
+                sx: { fontWeight: 800, color: BRAND.navy },
+            },
+            contentProps: {
+                sx: { color: BRAND.subtle },
+            },
+            confirmationButtonProps: {
+                variant: "contained",
+                disableElevation: true,
+                sx: {
+                    textTransform: "none",
+                    fontWeight: 700,
+                    borderRadius: "8px",
+                    backgroundColor: "#c62828",
+                    "&:hover": { backgroundColor: "#a31f1f" },
+                },
+            },
+            cancellationButtonProps: {
+                variant: "text",
+                sx: {
+                    textTransform: "none",
+                    fontWeight: 600,
+                    color: BRAND.navy,
+                },
+            },
+        });
+
+        if (confirmed) {
+            removeFromCart(user.uid, itemId);
+        }
     }
 
     // ---------- Loading skeleton ----------
@@ -318,7 +363,7 @@ export default function Cart() {
 
 
                                                     <IconButton
-                                                        onClick={() => removeFromCart(user.uid, itemId)}
+                                                        onClick={() => handleRemoveItem(itemId, product.name)}
                                                         sx={{
                                                             display: { xs: "inline-flex", sm: "none" },
                                                             color: "#c62828",
@@ -383,7 +428,7 @@ export default function Cart() {
 
 
                                                 <IconButton
-                                                    onClick={() => removeFromCart(user.uid, itemId)}
+                                                    onClick={() => handleRemoveItem(itemId, product.name)}
                                                     sx={{
                                                         display: { xs: "none", sm: "inline-flex" },
                                                         color: "#c62828",

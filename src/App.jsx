@@ -5,19 +5,23 @@ import AuthInitializer from "./initializers/AuthInitializer.jsx";
 import CartInitializer from "./initializers/CartInitializer.jsx";
 import router from './routes/router.jsx';
 import { HelmetProvider } from 'react-helmet-async';
+import { ConfirmProvider } from "material-ui-confirm";
 
 function App() {
 
   return (
-    <HelmetProvider>
-      <Provider store={store}>
-        <AuthInitializer>
-          <CartInitializer>
-            <RouterProvider router={router} />
-          </CartInitializer>
-        </AuthInitializer>
-      </Provider>
-    </HelmetProvider>
+    <ConfirmProvider>
+      <HelmetProvider>
+        <Provider store={store}>
+          <AuthInitializer>
+            <CartInitializer>
+              <RouterProvider router={router} />
+            </CartInitializer>
+          </AuthInitializer>
+        </Provider>
+      </HelmetProvider>
+    </ConfirmProvider>
+
   )
 }
 
