@@ -20,7 +20,7 @@ export default function StatCard({ label, value, icon: Icon, color = "#003349" }
           height: 50,
           minWidth: 50,
           borderRadius: "12px",
-          backgroundColor: `${color}1A`, // نفس اللون بشفافية خفيفة (hex + alpha)
+          backgroundColor: `${color}1A`, 
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

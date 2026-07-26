@@ -40,10 +40,10 @@ export default function Cart() {
     const { user } = useSelector((state) => state.auth);
     const { items, status } = useSelector((state) => state.cart);
 
-    const [products, setProducts] = useState({}); // { productId: productData }
+    const [products, setProducts] = useState({}); 
     const [loadingProducts, setLoadingProducts] = useState(true);
 
-    const cartEntries = Object.entries(items); // [ [itemId, {productId, color, quantity}], ... ]
+    const cartEntries = Object.entries(items); 
     const uniqueProductIds = [...new Set(cartEntries.map(([, item]) => item.productId))];
 
 

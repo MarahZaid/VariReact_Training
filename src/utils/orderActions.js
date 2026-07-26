@@ -48,12 +48,7 @@ export async function createOrderFromCart({
   const shippingFee = subtotal > 0 && subtotal < 200 ? 15 : 0;
   const totalBeforeDiscount = subtotal + shippingFee;
 
-  // Redeem points BEFORE writing the order, since we need the discounted
-  // total for the order record itself.
-  // NOTE (known limitation for this PoC): if the order write below fails
-  // after points were successfully deducted, the customer loses those
-  // points without getting an order. Acceptable for a training project;
-  // a production version would wrap both in a single transaction.
+
   let pointsDiscount = 0;
   let redeemedPoints = 0;
   if (pointsToRedeem > 0 && customerId) {

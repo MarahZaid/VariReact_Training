@@ -104,8 +104,8 @@ export default function Checkout() {
                     setEmail(customerRecord.email || "");
                     setPhone(customerRecord.phone || "");
                     setAddress(customerRecord.address || "");
-                    setCustomerId(customerRecord.id);              // NEW
-                    setPointsBalance(customerRecord.points || 0);   // NEW
+                    setCustomerId(customerRecord.id);              
+                    setPointsBalance(customerRecord.points || 0);   
                 }
             } catch (err) {
                 console.error("Failed to load customer profile:", err);

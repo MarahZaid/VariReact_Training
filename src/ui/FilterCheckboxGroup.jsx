@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Box, Typography, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { toggleFilter } from "../store/categoryProductsSlice";
 
-// options: [{ label: "Black", value: "Black" }, ...]
+
 export default function FilterCheckboxGroup({ title, filterType, options, hideTitle = false }) {
   const dispatch = useDispatch();
   const selectedValues = useSelector((state) => state.categoryProducts.filters[filterType]);

@@ -1,18 +1,17 @@
 import { ref, get, set, push } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 
-// ---- Config (single source of truth for the whole loyalty system) ----
 export const SIGNUP_BONUS_POINTS = 50;
-export const POINTS_PER_DOLLAR = 1;          // earning: 1 point per $1 spent
-export const POINTS_TO_DOLLAR_RATE = 100;    // redemption: 100 points = $1 off
+export const POINTS_PER_DOLLAR = 1;          
+export const POINTS_TO_DOLLAR_RATE = 100;    
 
 // ---- Internal helpers ----
 async function logPointsTransaction({ customerId, type, amount, orderId = null }) {
   const newRef = push(ref(db, "pointsHistory"));
   await set(newRef, {
     customerId,
-    type,        // "signup" | "order" | "redeem"
-    amount,      // positive for earn, negative for redeem
+    type,        
+    amount,      
     orderId,
     createdAt: Date.now(),
   });

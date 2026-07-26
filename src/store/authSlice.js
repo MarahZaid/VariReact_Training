@@ -4,8 +4,8 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    isAdmin: null,       // null | true | false
-    status: "loading",   // "loading" | "authenticated" | "unauthenticated"
+    isAdmin: null,       
+    status: "loading",  
   },
   reducers: {
     setUser(state, action) {
