@@ -5,6 +5,8 @@ import { auth, db } from "../../firebase/firebaseConfig";
 import { ref, get, query, orderByChild, equalTo } from "firebase/database";
 import { getCustomerByUid, updateCustomerProfile } from "../../utils/customerActions";
 import { useNavigate } from "react-router-dom";
+import { getPointsHistory } from "../../utils/loyaltyActions";
+import StarOutlineRoundedIcon from "@mui/icons-material/StarOutlineRounded";
 
 import {
     Box,
@@ -360,11 +362,122 @@ function OrdersTab({ email }) {
     );
 }
 
+const POINTS_LABELS = {
+    signup: "Signup bonus",
+    order: "Order reward",
+    redeem: "Redeemed at checkout",
+};
+
+function PointsTab({ customer }) {
+    const [history, setHistory] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchHistory() {
+            setLoading(true);
+            const list = await getPointsHistory(customer.id);
+            setHistory(list);
+            setLoading(false);
+        }
+
+        if (customer?.id) fetchHistory();
+    }, [customer?.id]);
+
+    if (loading) {
+        return (
+            <Box>
+                <Skeleton variant="text" width={140} height={32} sx={{ mb: 3 }} />
+                <Skeleton variant="rounded" height={90} sx={{ borderRadius: "14px", mb: 3 }} />
+                {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} variant="rounded" height={56} sx={{ borderRadius: "10px", mb: 1.5 }} />
+                ))}
+            </Box>
+        );
+    }
+
+    return (
+        <Box>
+            <Typography sx={{ fontWeight: 800, color: BRAND.navy, mb: 3, fontSize: "1.1rem" }}>
+                My Points
+            </Typography>
+
+            <Box
+                sx={{
+                    background: `linear-gradient(135deg, ${BRAND.navy}, ${BRAND.teal})`,
+                    borderRadius: "14px",
+                    p: 3,
+                    mb: 3,
+                    color: "#fff",
+                }}
+            >
+                <Stack direction="row" alignItems="center" spacing={1.5}>
+                    <StarOutlineRoundedIcon sx={{ fontSize: 32 }} />
+                    <Box>
+                        <Typography sx={{ fontSize: "1.8rem", mb:1, fontWeight: 800, lineHeight: 1.1, color:"#fff" }}>
+                            {customer.points || 0} points
+                        </Typography>
+                        <Typography sx={{ opacity: 0.85, fontSize: "0.85rem" , color:"#fff"}}>
+                            ≈ ${((customer.points || 0) / 100).toFixed(2)} in discounts
+                        </Typography>
+                    </Box>
+                </Stack>
+            </Box>
+
+            {history.length === 0 ? (
+                <Stack alignItems="center" spacing={1.5} sx={{ py: 6 }}>
+                    <StarOutlineRoundedIcon sx={{ fontSize: 36, color: BRAND.border }} />
+                    <Typography sx={{ color: BRAND.subtle }}>
+                        No points activity yet.
+                    </Typography>
+                </Stack>
+            ) : (
+                <Stack spacing={1.5}>
+                    {history.map((entry) => {
+                        const isPositive = entry.amount > 0;
+                        return (
+                            <Box
+                                key={entry.id}
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    border: `1px solid ${BRAND.border}`,
+                                    borderRadius: "10px",
+                                    px: 2,
+                                    py: 1.5,
+                                }}
+                            >
+                                <Box>
+                                    <Typography sx={{ fontWeight: 600, color: BRAND.ink, fontSize: "0.9rem" }}>
+                                        {POINTS_LABELS[entry.type] || entry.type}
+                                        {entry.orderId ? ` · Order #${entry.orderId}` : ""}
+                                    </Typography>
+                                    <Typography sx={{ color: BRAND.subtle, fontSize: "0.78rem" }}>
+                                        {entry.createdAt ? new Date(entry.createdAt).toLocaleDateString() : ""}
+                                    </Typography>
+                                </Box>
+                                <Typography
+                                    sx={{
+                                        fontWeight: 700,
+                                        color: isPositive ? "#2e7d32" : "#c62828",
+                                    }}
+                                >
+                                    {isPositive ? "+" : ""}{entry.amount}
+                                </Typography>
+                            </Box>
+                        );
+                    })}
+                </Stack>
+            )}
+        </Box>
+    );
+}
+
 const NAV_ITEMS = [
     { key: "profile", label: "Profile", icon: PersonOutlineOutlinedIcon },
     { key: "orders", label: "Orders", icon: ReceiptLongOutlinedIcon },
+    { key: "points", label: "My Points", icon: StarOutlineRoundedIcon },
 ];
-
 export default function Account() {
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
@@ -591,6 +704,7 @@ export default function Account() {
                             />
                         )}
                         {tab === "orders" && <OrdersTab email={customer.email} />}
+                        {tab === "points" && <PointsTab customer={customer} />}
                     </Paper>
                 </Box>
             </Box>

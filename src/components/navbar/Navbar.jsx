@@ -81,6 +81,10 @@ function Navbar() {
   const miniCartOpen = Boolean(miniCartAnchor);
   const miniCartCloseTimer = useRef(null);
 
+  const { status, isAdmin } = useSelector((state) => state.auth);
+  const points = useSelector((state) => state.loyalty.points);
+
+
   function handleCartMouseEnter(event) {
     if (isMobile) return;
     clearTimeout(miniCartCloseTimer.current);
@@ -115,7 +119,7 @@ function Navbar() {
   };
 
 
-  const { status, isAdmin } = useSelector((state) => state.auth);
+
 
   function handleAccountClick() {
     if (status === "unauthenticated") {
@@ -133,15 +137,13 @@ function Navbar() {
   const desktopSearchBoxRef = useRef(null);
   const mobileSearchBoxRef = useRef(null);
 
-  // Debounce so we don't re-filter on every single keystroke.
+  
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedTerm(searchTerm.trim()), 250);
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Fetch (and cache) the products/categories index once, the first time
-  // someone actually starts typing. After this, filtering is instant and
-  // local — no extra Firebase reads per letter.
+  
   useEffect(() => {
     if (debouncedTerm && searchIndex.status === "idle") {
       dispatch(fetchSearchIndex());
@@ -206,13 +208,29 @@ function Navbar() {
             gap: { xs: 0.25, sm: 0 },
           }}
         >
-          <Link
-            href="#"
-            underline="always"
-            sx={{ fontSize: { xs: 11, sm: 14 }, color: "#fff", textDecorationColor: "#fff" }}
-          >
-            VARI DEAL DAYS
-          </Link>
+          {status === "authenticated" && !isAdmin ? (
+            <Link
+              component={RouterLink}
+              to="/account"
+              underline="always"
+              sx={{ fontSize: { xs: 11, sm: 14 }, color: "#fff", textDecorationColor: "#fff" }}
+            >
+              ⭐ YOU HAVE {points} POINTS — REDEEM AT CHECKOUT
+            </Link>
+          ) : status === "authenticated" && isAdmin ? (
+            <Typography sx={{ fontSize: { xs: 11, sm: 14 }, color: "#fff" }}>
+              VARI DEAL DAYS
+            </Typography>
+          ) : (
+            <Link
+              component={RouterLink}
+              to="/login"
+              underline="always"
+              sx={{ fontSize: { xs: 11, sm: 14 }, color: "#fff", textDecorationColor: "#fff" }}
+            >
+              🎁 SIGN UP TODAY & GET 50 POINTS INSTANTLY
+            </Link>
+          )}
 
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
             <Link

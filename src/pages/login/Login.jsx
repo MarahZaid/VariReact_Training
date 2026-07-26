@@ -22,6 +22,7 @@ import {
     Alert,
     CircularProgress,
     Link,
+    Snackbar,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import Visibility from "@mui/icons-material/Visibility";
@@ -33,6 +34,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { ref, get, set } from "firebase/database";
 import { auth, db } from "../../firebase/firebaseConfig";
 import { setSEO } from "../../store/seoSlice";
+import { awardSignupPoints } from "../../utils/loyaltyActions";
 
 
 const BRAND = {
@@ -275,7 +277,6 @@ export default function Login() {
                 await updateProfile(credential.user, { displayName: name.trim() });
             }
 
-
             const newCustomerId = await getNextCustomerId();
             await set(ref(db, `customers/${newCustomerId}`), {
                 name: name.trim(),
@@ -284,9 +285,19 @@ export default function Login() {
                 address: "",
                 createdAt: Date.now(),
                 uid: credential.user.uid,
+                points: 0,
             });
 
-            navigate("/");
+            try {
+                await awardSignupPoints(newCustomerId);
+                setShowPointsToast(true);
+                setTimeout(() => navigate("/"), 3000);
+            } catch (pointsErr) {
+                console.error("Failed to award signup bonus:", pointsErr);
+                navigate("/");
+            }
+
+
         } catch (err) {
             setError(friendlyError(err));
         } finally {
@@ -309,6 +320,7 @@ export default function Login() {
     }
 
     const isSignup = mode === "signup";
+    const [showPointsToast, setShowPointsToast] = useState(false);
 
     return (
         <Box
@@ -819,6 +831,15 @@ export default function Login() {
                     )}
                 </Box>
             </Box>
+            <Snackbar
+                open={showPointsToast}
+                autoHideDuration={1800}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert severity="success" variant="filled" sx={{ backgroundColor: "#007fad", fontWeight: 600 }}>
+                    🎉 Welcome! You just earned 50 points
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }

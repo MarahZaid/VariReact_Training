@@ -6,6 +6,8 @@ import CartInitializer from "./initializers/CartInitializer.jsx";
 import router from './routes/router.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 import { ConfirmProvider } from "material-ui-confirm";
+import LoyaltyInitializer from "./initializers/LoyaltyInitializer.jsx";
+import PointsToast from "./components/pointsToast/PointsToast.jsx";
 
 function App() {
 
@@ -15,7 +17,10 @@ function App() {
         <Provider store={store}>
           <AuthInitializer>
             <CartInitializer>
-              <RouterProvider router={router} />
+              <LoyaltyInitializer>          
+                <RouterProvider router={router} />
+                <PointsToast />              
+              </LoyaltyInitializer>
             </CartInitializer>
           </AuthInitializer>
         </Provider>

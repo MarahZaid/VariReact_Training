@@ -107,11 +107,11 @@ export default function AdminCustomers() {
           <Table>
             <TableHead>
               <TableRow>
-                {["Customer", "Phone", "Orders", "Total Spent", "Last Order", "Actions"].map(
+                {["Customer", "Phone", "Orders", "Points", "Total Spent", "Last Order", "Actions"].map(
                   (col, i) => (
                     <TableCell
                       key={col}
-                      align={i === 2 ? "center" : i === 3 || i === 5 ? "right" : "left"}
+                      align={i === 2 || i === 3 || i === 4 || i === 5 || i === 6? "center" :   "left"}
                       sx={{
                         fontWeight: 700,
                         fontSize: "0.8rem",
@@ -147,6 +147,9 @@ export default function AdminCustomers() {
                     <TableCell align="center">
                       <Skeleton variant="rounded" width={32} height={24} sx={{ borderRadius: "8px", mx: "auto" }} />
                     </TableCell>
+                    <TableCell align="center">
+                      <Skeleton variant="text" width={40} height={20} sx={{ mx: "auto" }} />
+                    </TableCell>
                     <TableCell align="right">
                       <Skeleton variant="text" width={60} height={22} sx={{ ml: "auto" }} />
                     </TableCell>
@@ -164,7 +167,7 @@ export default function AdminCustomers() {
 
               {!loading && displayedCustomers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 6, border: "none" }}>
+                  <TableCell colSpan={7} align="center" sx={{ py: 6, border: "none" }}>
                     <Stack alignItems="center" spacing={1}>
                       <PeopleAltOutlinedIcon sx={{ fontSize: 32, color: BRAND.border }} />
                       <Typography variant="body2" sx={{ color: BRAND.subtle }}>
@@ -226,19 +229,32 @@ export default function AdminCustomers() {
                       />
                     </TableCell>
 
-                    <TableCell align="right">
+                    <TableCell align="center">
+                      <Chip
+                        label={`${customer.points || 0} pts`}
+                        size="small"
+                        sx={{
+                          backgroundColor: "rgba(46,125,50,0.1)",
+                          color: "#2e7d32",
+                          fontWeight: 700,
+                          borderRadius: "8px",
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell align="center">
                       <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>
                         ${customer.totalSpent.toFixed(2)}
                       </Typography>
                     </TableCell>
 
-                    <TableCell>
+                    <TableCell align="center">
                       <Typography variant="body2" sx={{ color: BRAND.subtle }}>
                         {formatDate(customer.lastOrderAt)}
                       </Typography>
                     </TableCell>
 
-                    <TableCell align="right">
+                    <TableCell align="center">
                       <Tooltip title="View Orders">
                         <IconButton
                           onClick={() => handleViewOrders(customer)}
@@ -264,7 +280,7 @@ export default function AdminCustomers() {
         </TableContainer>
       </Card>
 
-     
+
       {!loading && hasMore && (
         <Box sx={{ display: "flex", justifyContent: "center", mt: 2.5 }}>
           <Button

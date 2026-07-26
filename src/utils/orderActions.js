@@ -1,5 +1,6 @@
 import { ref, get, set, remove } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
+import { redeemPoints } from "./loyaltyActions";
 
 async function getNextOrderId() {
   const snapshot = await get(ref(db, "orders"));
@@ -19,6 +20,7 @@ async function getNextOrderId() {
 
 export async function createOrderFromCart({
   uid,
+  customerId = null,
   customerName,
   customerEmail,
   phone = "",
@@ -26,6 +28,7 @@ export async function createOrderFromCart({
   paymentMethod = "cash",
   cartEntries,
   products,
+  pointsToRedeem = 0,
 }) {
   const items = cartEntries
     .map(([, item]) => {
@@ -43,7 +46,23 @@ export async function createOrderFromCart({
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingFee = subtotal > 0 && subtotal < 200 ? 15 : 0;
-  const totalAmount = subtotal + shippingFee;
+  const totalBeforeDiscount = subtotal + shippingFee;
+
+  // Redeem points BEFORE writing the order, since we need the discounted
+  // total for the order record itself.
+  // NOTE (known limitation for this PoC): if the order write below fails
+  // after points were successfully deducted, the customer loses those
+  // points without getting an order. Acceptable for a training project;
+  // a production version would wrap both in a single transaction.
+  let pointsDiscount = 0;
+  let redeemedPoints = 0;
+  if (pointsToRedeem > 0 && customerId) {
+    const { discount } = await redeemPoints(customerId, pointsToRedeem);
+    pointsDiscount = Math.min(discount, totalBeforeDiscount);
+    redeemedPoints = pointsToRedeem;
+  }
+
+  const totalAmount = Math.max(totalBeforeDiscount - pointsDiscount, 0);
 
   const orderId = await getNextOrderId();
 
@@ -56,12 +75,13 @@ export async function createOrderFromCart({
     items,
     subtotal,
     shippingFee,
+    pointsRedeemed: redeemedPoints,
+    pointsDiscount,
     totalAmount,
     status: "pending",
     createdAt: Date.now(),
   });
 
- 
   await remove(ref(db, `carts/${uid}`));
 
   return orderId;

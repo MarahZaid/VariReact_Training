@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { ref, get, update } from "firebase/database";
 import emailjs from "@emailjs/browser";
 import { db } from "../firebase/firebaseConfig";
+import { awardOrderPoints } from "../utils/loyaltyActions";
+import { getCustomerByEmail } from "../utils/customerActions";
 
 const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
@@ -58,9 +60,7 @@ export default function useOrders() {
   async function updateOrderStatus(orderId, status) {
     const current = orders.find((order) => order.id === orderId);
 
-    // Completed orders are terminal and must never be changed. This is a
-    // client-side fast fail for good UX; the source of truth for this rule
-    // lives in database.rules.json so it can't be bypassed by direct writes.
+
     if (current?.status === "completed") {
       throw new Error(`Order ${orderId} is completed and cannot be changed.`);
     }
@@ -70,21 +70,25 @@ export default function useOrders() {
       prev.map((order) => (order.id === orderId ? { ...order, status } : order))
     );
 
-    // Fire the completion email only on the transition INTO "completed".
-    // Since "completed" is a locked/terminal status, this can only ever
-    // happen once per order.
+
     if (status === "completed" && current) {
       try {
         await sendCompletionEmail({ ...current, id: orderId, status });
       } catch (err) {
-        // Don't let an email failure roll back or block the status change;
-        // just log it so it can be noticed/retried.
         console.error(`Failed to send completion email for order ${orderId}:`, err);
       }
+
+        try {
+            const customer = await getCustomerByEmail(current.customerEmail);
+            if (customer) {
+                await awardOrderPoints(customer.id, orderId, current.totalAmount || 0);
+            }
+        } catch (err) {
+            console.error(`Failed to award points for order ${orderId}:`, err);
+        }
     }
   }
 
-  // Unique customers derived from orders (email as the unique key)
   const customers = Object.values(
     orders.reduce((acc, order) => {
       if (!order.customerEmail) return acc;

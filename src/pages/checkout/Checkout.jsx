@@ -19,12 +19,14 @@ import {
     FormControlLabel,
     FormControl,
     Alert,
+    Slider,
 } from "@mui/material";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { getCustomerByUid } from "../../utils/customerActions";
 import { createOrderFromCart } from "../../utils/orderActions";
+import { POINTS_TO_DOLLAR_RATE, POINTS_PER_DOLLAR } from "../../utils/loyaltyActions";
 
 const BRAND = {
     navy: "#003349",
@@ -46,6 +48,9 @@ export default function Checkout() {
     const [products, setProducts] = useState({});
     const [loadingProducts, setLoadingProducts] = useState(true);
     const [loadingCustomer, setLoadingCustomer] = useState(true);
+    const [customerId, setCustomerId] = useState(null);
+    const [pointsBalance, setPointsBalance] = useState(0);
+    const [pointsToRedeem, setPointsToRedeem] = useState(0);
 
     const cartEntries = Object.entries(items || {});
     const uniqueProductIds = [...new Set(cartEntries.map(([, item]) => item.productId))];
@@ -99,6 +104,8 @@ export default function Checkout() {
                     setEmail(customerRecord.email || "");
                     setPhone(customerRecord.phone || "");
                     setAddress(customerRecord.address || "");
+                    setCustomerId(customerRecord.id);              // NEW
+                    setPointsBalance(customerRecord.points || 0);   // NEW
                 }
             } catch (err) {
                 console.error("Failed to load customer profile:", err);
@@ -122,6 +129,10 @@ export default function Checkout() {
 
     const shipping = subtotal > 0 && subtotal < 200 ? 15 : 0;
     const total = subtotal + shipping;
+    const maxRedeemablePoints = Math.min(pointsBalance, Math.floor(total * POINTS_TO_DOLLAR_RATE));
+    const pointsDiscount = pointsToRedeem / POINTS_TO_DOLLAR_RATE;
+    const finalTotal = Math.max(total - pointsDiscount, 0);
+    const estimatedPointsEarned = Math.floor(finalTotal * POINTS_PER_DOLLAR);
 
     function validate() {
         const next = {};
@@ -148,6 +159,7 @@ export default function Checkout() {
         try {
             const orderId = await createOrderFromCart({
                 uid: user.uid,
+                customerId,           // NEW
                 customerName: fullName.trim(),
                 customerEmail: email.trim(),
                 phone: phone.trim(),
@@ -155,6 +167,7 @@ export default function Checkout() {
                 paymentMethod,
                 cartEntries,
                 products,
+                pointsToRedeem,       // NEW
             });
 
 
@@ -163,7 +176,11 @@ export default function Checkout() {
             navigate(`/order-details/${orderId}`);
         } catch (err) {
             console.error("Failed to place order:", err);
-            setSubmitError("Something went wrong while placing your order. Please try again.");
+            if (err.message?.includes("points")) {
+                setSubmitError(err.message);
+            } else {
+                setSubmitError("Something went wrong while placing your order. Please try again.");
+            }
         } finally {
             setPlacingOrder(false);
         }
@@ -375,10 +392,49 @@ export default function Checkout() {
 
                         <Divider sx={{ mb: 2.5, borderColor: BRAND.border }} />
 
-                        <Stack direction="row" justifyContent="space-between" sx={{ mb: 3 }}>
+                        {pointsBalance > 0 && (
+                            <>
+                                <Stack spacing={1} sx={{ mb: 2.5 }}>
+                                    <Typography sx={{ fontWeight: 700, color: BRAND.navy, fontSize: "0.9rem" }}>
+                                        Use your points
+                                    </Typography>
+                                    <Typography sx={{ color: BRAND.subtle, fontSize: "0.8rem" }}>
+                                        You have {pointsBalance} points (${(pointsBalance / POINTS_TO_DOLLAR_RATE).toFixed(2)} available)
+                                    </Typography>
+                                    <Box sx={{ px: 0.5 }}>
+                                        <Slider
+                                            value={pointsToRedeem}
+                                            onChange={(e, val) => setPointsToRedeem(val)}
+                                            min={0}
+                                            max={maxRedeemablePoints}
+                                            step={10}
+                                            valueLabelDisplay="auto"
+                                            valueLabelFormat={(val) => `${val} pts`}
+                                            sx={{ color: BRAND.teal }}
+                                        />
+                                    </Box>
+                                    <Typography sx={{ color: BRAND.subtle, fontSize: "0.78rem" }}>
+                                        Using {pointsToRedeem} points
+                                    </Typography>
+                                </Stack>
+                                <Divider sx={{ mb: 2.5, borderColor: BRAND.border }} />
+                            </>
+                        )}
+
+                        {pointsToRedeem > 0 && (
+                            <Stack direction="row" justifyContent="space-between" sx={{ mb: 1.4 }}>
+                                <Typography sx={{ color: BRAND.subtle, mr: 1 }}>Points discount:</Typography>
+                                <Typography sx={{ fontWeight: 600, color: "#2e7d32" }}>-${pointsDiscount.toFixed(2)}</Typography>
+                            </Stack>
+                        )}
+
+                        <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
                             <Typography variant="h6" sx={{ fontWeight: 700, color: BRAND.navy, mr: 1 }}>Total: </Typography>
-                            <Typography variant="h6" sx={{ fontWeight: 800, color: BRAND.navy }}>${total.toFixed(2)}</Typography>
+                            <Typography variant="h6" sx={{ fontWeight: 800, color: BRAND.navy }}>${finalTotal.toFixed(2)}</Typography>
                         </Stack>
+                        <Typography sx={{ color: BRAND.subtle, fontSize: "0.78rem", mb: 3 }}>
+                            You'll earn ~{estimatedPointsEarned} points once this order is completed
+                        </Typography>
 
                         <Button
                             fullWidth
